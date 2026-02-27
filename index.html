@@ -265,7 +265,8 @@ async function getObservations() {
     if (!map[qId]) map[qId] = { waiting: 0, interacting: 0, alerting: 0, longestWaitSec: 0 };
     for (const d of (row.data || [])) {
       if (d.metric === 'oLongestWaiting') {
-        const maxSec = Math.round((d.stats?.max ?? 0) / 1000);
+        const startMs = d.stats?.calculatedMetricValue ?? 0;
+        const maxSec = startMs > 0 ? Math.round((Date.now() - startMs) / 1000) : 0;
         if (maxSec > map[qId].longestWaitSec) map[qId].longestWaitSec = maxSec;
       }
       if (d.metric === 'oWaiting') {
