@@ -317,32 +317,66 @@ async function getAggregates() {
     interval: `${bod.toISOString()}/${now.toISOString()}`,
     groupBy: ['queueId'],
     filter: {
-      type: 'or',
-      predicates: ids.map(id => ({
+      type: 'and',
+      predicates: [{
         type: 'dimension',
         dimension: 'queueId',
         operator: 'matches',
-        value: id,
+        value: ids[0],
+      }],
+      clauses: ids.slice(1).map(id => ({
+        type: 'or',
+        predicates: [{
+          type: 'dimension',
+          dimension: 'queueId',
+          operator: 'matches',
+          value: id,
+        }],
       })),
     },
     metrics: ['nHandled', 'tAnswered'],
     flattenMultivaluedDimensions: true,
   };
-  const data = await api('/api/v2/analytics/conversations/aggregates/query', {
-    method: 'POST', body: JSON.stringify(body),
-  });
+
+  // Simpler single filter approach — query each queue separately if needed
   const map = {};
-  for (const row of (data.results || [])) {
-    const qId = row.group?.queueId;
-    if (!qId) continue;
-    const s = {};
-    for (const d of (row.data || [])) {
-      for (const m of (d.metrics || [])) s[m.metric] = m.stats || {};
-    }
-    map[qId] = {
-      handledToday: s.nHandled?.count || 0,
-      maxWaitSec:   Math.round((s.tAnswered?.max || 0) / 1000),
+  try {
+    // Try bulk query first
+    const bulkBody = {
+      interval: `${bod.toISOString()}/${now.toISOString()}`,
+      groupBy: ['queueId'],
+      filter: {
+        type: 'or',
+        predicates: ids.map(id => ({
+          type: 'dimension',
+          dimension: 'queueId',
+          operator: 'matches',
+          value: id,
+        })),
+      },
+      metrics: ['nConnected', 'tAnswered'],
     };
+    const data = await api('/api/v2/analytics/conversations/aggregates/query', {
+      method: 'POST', body: JSON.stringify(bulkBody),
+    });
+    for (const row of (data.results || [])) {
+      const qId = row.group?.queueId;
+      if (!qId) continue;
+      const s = {};
+      for (const d of (row.data || [])) {
+        for (const m of (d.metrics || [])) s[m.metric] = m.stats || {};
+      }
+      map[qId] = {
+        handledToday: s.nConnected?.count || 0,
+        maxWaitSec:   Math.round((s.tAnswered?.max || 0) / 1000),
+      };
+    }
+  } catch (e) {
+    // If bulk fails, return empty map so observations still render
+    console.warn('Aggregates fetch failed, showing live counts only:', e.message);
+    for (const id of ids) {
+      map[id] = { handledToday: 0, maxWaitSec: 0 };
+    }
   }
   return map;
 }
