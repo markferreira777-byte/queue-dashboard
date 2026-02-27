@@ -471,53 +471,71 @@ function handleExpired() {
   setTimeout(() => showAuth(), 2000);
 }
 
-/* ── Observations (live counts) ─────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   ── Routing Activity (live waiting + interacting) ─────
+═══════════════════════════════════════════════════════ */
 async function getObservations() {
   const ids = CONFIG.QUEUES.map(q => q.id);
   const body = {
+    order: 'asc',
     filter: {
-      type: 'or',
-      predicates: ids.map(id => ({
-        type: 'dimension', dimension: 'queueId', operator: 'matches', value: id,
-      })),
+      type: 'and',
+      clauses: [{
+        type: 'or',
+        predicates: ids.map(id => ({
+          type: 'dimension', dimension: 'queueId', value: id,
+        })),
+      }],
     },
-    metrics: ['oWaiting', 'oInteracting', 'oAlerting'],
+    groupBy: ['queueId'],
+    metrics: [
+      { metric: 'oWaiting',     details: false },
+      { metric: 'oInteracting', details: false },
+      { metric: 'oAlerting',    details: false },
+    ],
   };
-  const data = await api('/api/v2/analytics/queues/observations/query', {
+  const data = await api('/api/v2/analytics/routing/activity/query?pageNumber=1&pageSize=100', {
     method: 'POST', body: JSON.stringify(body),
   });
   const map = {};
-  for (const row of (data.results || [])) {
+  for (const row of (data.results || data.entities || [])) {
     const qId = row.group?.queueId;
     if (!qId) continue;
     const s = {};
-    for (const d of (row.data || [])) s[d.metric] = d.stats?.count ?? 0;
+    for (const d of (row.data || [])) {
+      const count = d.stats?.count ?? d.count ?? 0;
+      s[d.metric] = count;
+    }
     map[qId] = {
       waiting:     s.oWaiting     || 0,
       interacting: s.oInteracting || 0,
+      alerting:    s.oAlerting    || 0,
     };
   }
   return map;
 }
 
-/* ── Aggregates (today's stats) ─────────────────────── */
+/* ── Conversation Aggregates (handled + wait times) ──── */
 async function getAggregates() {
-  const ids  = CONFIG.QUEUES.map(q => q.id);
-  const now  = new Date();
-  const bod  = new Date(now); bod.setHours(0,0,0,0);
+  const ids = CONFIG.QUEUES.map(q => q.id);
+  const now = new Date();
+  const bod = new Date(now); bod.setHours(0,0,0,0);
   const body = {
     interval: `${bod.toISOString()}/${now.toISOString()}`,
     groupBy:  ['queueId'],
     filter: {
-      type: 'or',
-      predicates: ids.map(id => ({
-        type: 'dimension', dimension: 'queueId', operator: 'matches', value: id,
-      })),
+      type: 'and',
+      clauses: [{
+        type: 'or',
+        predicates: ids.map(id => ({
+          type: 'dimension', dimension: 'queueId', value: id,
+        })),
+      }],
     },
-    metrics: ['nHandled', 'tWait'],
+    metrics: ['nHandled', 'tAnswered'],
     flattenMultivaluedDimensions: true,
   };
-  const data = await api('/api/v2/analytics/queues/aggregates/query', {
+  const data = await api('/api/v2/analytics/conversations/aggregates/query', {
     method: 'POST', body: JSON.stringify(body),
   });
   const map = {};
@@ -529,10 +547,10 @@ async function getAggregates() {
       for (const m of (d.metrics || [])) s[m.metric] = m.stats || {};
     }
     const handled  = s.nHandled?.count || 0;
-    const maxWaitMs= s.tWait?.max      || 0;
+    const maxAnsMs = s.tAnswered?.max  || 0;
     map[qId] = {
       handledToday: handled,
-      maxWaitSec:   Math.round(maxWaitMs / 1000),
+      maxWaitSec:   Math.round(maxAnsMs / 1000),
     };
   }
   return map;
@@ -541,12 +559,15 @@ async function getAggregates() {
 /* ── Agents on queue ─────────────────────────────────── */
 async function getAgents(queueId) {
   try {
-    const d = await api(`/api/v2/routing/queues/${queueId}/users?pageSize=100&joined=true`);
+    const d = await api(
+      `/api/v2/routing/queues/${queueId}/users` +
+      `?pageSize=50&pageNumber=1&joined=false&sortBy=name&sortOrder=asc` +
+      `&expand=presence`
+    );
     return (d.entities || []).length;
   } catch { return null; }
 }
 
-/* ═══════════════════════════════════════════════════════
    MAIN POLL
 ═══════════════════════════════════════════════════════ */
 async function poll() {
