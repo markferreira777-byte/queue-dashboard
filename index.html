@@ -255,7 +255,7 @@ async function getObservations() {
       clauses: [{ type: 'or', predicates: ids.map(id => ({ type: 'dimension', dimension: 'queueId', value: id })) }],
     },
     groupBy: ['queueId'],
-    metrics: ['oWaiting', 'oInteracting', 'oAlerting', 'oLongestWaitingInteraction'],
+    metrics: ['oWaiting', 'oInteracting', 'oAlerting'],
   };
   const data = await api('/api/v2/analytics/queues/observations/query', { method: 'POST', body: JSON.stringify(body) });
   const map = {};
@@ -264,13 +264,13 @@ async function getObservations() {
     if (!qId) continue;
     if (!map[qId]) map[qId] = { waiting: 0, interacting: 0, alerting: 0, longestWaitSec: 0 };
     for (const d of (row.data || [])) {
-      if (d.metric === 'oWaiting')                    map[qId].waiting     += d.stats?.count ?? 0;
+      if (d.metric === 'oWaiting') {
+        map[qId].waiting += d.stats?.count ?? 0;
+        const maxSec = Math.round((d.stats?.max ?? 0) / 1000);
+        if (maxSec > map[qId].longestWaitSec) map[qId].longestWaitSec = maxSec;
+      }
       if (d.metric === 'oInteracting')                map[qId].interacting += d.stats?.count ?? 0;
       if (d.metric === 'oAlerting')                   map[qId].alerting    += d.stats?.count ?? 0;
-      if (d.metric === 'oLongestWaitingInteraction') {
-        const secs = Math.round((d.stats?.max ?? 0) / 1000);
-        if (secs > map[qId].longestWaitSec) map[qId].longestWaitSec = secs;
-      }
     }
   }
   return map;
