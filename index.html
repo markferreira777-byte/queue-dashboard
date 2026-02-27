@@ -295,15 +295,13 @@ async function getObservations() {
   for (const row of (data.results || [])) {
     const qId = row.group?.queueId;
     if (!qId) continue;
-    const s = {};
+    if (!map[qId]) map[qId] = { waiting: 0, interacting: 0, alerting: 0 };
     for (const d of (row.data || [])) {
-      s[d.metric] = d.stats?.count ?? 0;
+      const count = d.stats?.count ?? 0;
+      if (d.metric === 'oWaiting')     map[qId].waiting     += count;
+      if (d.metric === 'oInteracting') map[qId].interacting += count;
+      if (d.metric === 'oAlerting')    map[qId].alerting    += count;
     }
-    map[qId] = {
-      waiting:     s.oWaiting     || 0,
-      interacting: s.oInteracting || 0,
-      alerting:    s.oAlerting    || 0,
-    };
   }
   return map;
 }
