@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Queue Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── TOKENS ──────────────────────────────────────────── */
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1c2333;
+      --border:   #30363d;
+      --accent:   #58a6ff;
+      --green:    #3fb950;
+      --yellow:   #d29922;
+      --red:      #f85149;
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --font-h:   'Barlow Condensed', sans-serif;
+      --font-b:   'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-b);
+      min-height: 100vh;
+    }
+
+    /* subtle scanline texture */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 100;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.07) 2px,
+        rgba(0,0,0,0.07) 4px
+      );
+    }
+
+    /* ── HEADER ──────────────────────────────────────────── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+    }
+
+    .brand {
+      display: flex; align-items: baseline; gap: 0.6rem;
+    }
+    .brand-name {
+      font-family: var(--font-h);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .brand-divider { color: var(--border); font-size: 1.1rem; }
+    .brand-sub {
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+    .clock {
+      font-family: var(--font-h);
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .live-badge {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid;
+      transition: all 0.3s;
+    }
+    .live-badge.live    { color: var(--green);  border-color: var(--green);  background: rgba(63,185,80,0.1); }
+    .live-badge.offline { color: var(--muted);  border-color: var(--border); background: transparent; }
+    .live-badge.error   { color: var(--red);    border-color: var(--red);    background: rgba(248,81,73,0.1); }
+    .live-badge.authing { color: var(--accent); border-color: var(--accent); background: rgba(88,166,255,0.1); }
+
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: currentColor;
+    }
+    .dot.pulse { animation: blink 1.8s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* ── MAIN ────────────────────────────────────────────── */
+    main { padding: 2rem; }
+
+    /* ── GRID ────────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── QUEUE CARD ──────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      animation: rise 0.35s ease both;
+      transition: border-color 0.25s;
+    }
+    .card:hover { border-color: #484f58; }
+
+    @keyframes rise {
+      from { opacity:0; transform: translateY(12px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .card-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 1.1rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-name {
+      font-family: var(--font-h);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 200px;
+    }
+    .health {
+      font-family: var(--font-h);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      border: 1px solid currentColor;
+      white-space: nowrap;
+    }
+    .health.ok   { color: var(--green); }
+    .health.warn { color: var(--yellow); }
+    .health.crit { color: var(--red); }
+
+    /* ── STAT BLOCKS ─────────────────────────────────────── */
+    .stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .stat {
+      padding: 1rem 1.1rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .stat:nth-child(2n) { border-right: none; }
+    .stat:nth-child(3), .stat:nth-child(4) { border-bottom: none; }
+
+    .stat-label {
+      font-family: var(--font-h);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    .stat-val {
+      font-family: var(--font-h);
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      transition: color 0.4s;
+    }
+    .stat-val.c-accent  { color: var(--accent); }
+    .stat-val.c-green   { color: var(--green); }
+    .stat-val.c-yellow  { color: var(--yellow); }
+    .stat-val.c-red     { color: var(--red); }
+
+    .stat-unit {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+      font-weight: 300;
+    }
+
+    /* waiting bar */
+    .wait-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--border);
+    }
+    .wait-bar-fill {
+      height: 100%;
+      transition: width 0.8s ease, background 0.4s;
+    }
+
+    /* ── CARD FOOTER ─────────────────────────────────────── */
+    .card-foot {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.55rem 1.1rem;
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── AUTH OVERLAY ────────────────────────────────────── */
+    #auth-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    #auth-overlay h1 {
+      font-family: var(--font-h);
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    #auth-overlay p {
+      color: var(--muted);
+      max-width: 400px;
+      text-align: center;
+      line-height: 1.7;
+      font-size: 0.9rem;
+    }
+    .btn-auth {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--accent);
+      color: #000;
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.8rem 2.5rem;
+      border: none; border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-auth:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .config-warning {
+      background: rgba(248,81,73,0.1);
+      border: 1px solid var(--red);
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
+      color: var(--red);
+      font-size: 0.85rem;
+      max-width: 480px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .config-warning code {
+      background: rgba(255,255,255,0.07);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+
+    /* ── EMPTY / ERROR ───────────────────────────────────── */
+    .empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--muted);
+    }
+    .empty .icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.4; }
+
+    /* ── TOAST ───────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 300;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.75rem 1.1rem;
+      font-size: 0.82rem;
+      max-width: 300px;
+      opacity: 0; transform: translateY(8px);
+      transition: all 0.25s;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.err  { border-left-color: var(--red); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     ⚙️  CONFIGURATION — Edit these 3 values, nothing else
+══════════════════════════════════════════════════════ -->
+<script>
+const CONFIG = {
+  // 1️⃣  Your OAuth2 Client ID from Genesys Cloud Admin → Integrations → OAuth
+  CLIENT_ID: 'YOUR_CLIENT_ID_HERE',
+
+  // 2️⃣  Your Genesys Cloud region domain (examples below — uncomment yours)
+  REGION: 'mypurecloud.com',          // US East
+  // REGION: 'usw2.pure.cloud',       // US West
+  // REGION: 'cac1.pure.cloud',       // Canada
+  // REGION: 'mypurecloud.ie',        // Ireland
+  // REGION: 'mypurecloud.de',        // Germany
+  // REGION: 'mypurecloud.com.au',    // Australia
+  // REGION: 'mypurecloud.jp',        // Japan
+
+  // 3️⃣  Queue IDs to monitor — find these in Admin → Routing → Queues (UUID in the URL)
+  QUEUES: [
+    { id: 'QUEUE_ID_1', label: 'Support Team' },
+    { id: 'QUEUE_ID_2', label: 'Sales' },
+    { id: 'QUEUE_ID_3', label: 'Billing' },
+    // Add more queues here as needed...
+  ],
+
+  // ── Advanced (optional) ────────────────────────────────
+  REFRESH_MS:    30_000,   // How often to poll in milliseconds (default 30s)
+  WARN_WAITING:  5,        // Waiting count that triggers WARNING health
+  CRIT_WAITING:  10,       // Waiting count that triggers CRITICAL health
+  WARN_WAIT_SEC: 120,      // Longest wait (seconds) that triggers WARNING
+  CRIT_WAIT_SEC: 300,      // Longest wait (seconds) that triggers CRITICAL
+};
+</script>
+<!-- ══════════════════════════════════════════════════════
+     END CONFIG
+══════════════════════════════════════════════════════ -->
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <span class="brand-name">Queue Monitor</span>
+    <span class="brand-divider">|</span>
+    <span class="brand-sub" id="page-label">Live Dashboard</span>
+  </div>
+  <div class="header-meta">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="live-badge offline" id="live-badge">
+      <span class="dot"></span>
+      <span id="badge-text">OFFLINE</span>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+  <div class="grid" id="grid">
+    <div class="empty"><div class="icon">⏳</div><p>Connecting…</p></div>
+  </div>
+</main>
+
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay" style="display:none">
+  <h1>Queue Monitor</h1>
+  <p id="auth-msg">Sign in with your Genesys Cloud account to start monitoring queue statistics.</p>
+  <div id="config-error" class="config-warning" style="display:none"></div>
+  <button class="btn-auth" id="auth-btn" onclick="doLogin()">
+    🔐 Sign in with Genesys Cloud
+  </button>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   RUNTIME STATE
+═══════════════════════════════════════════════════════ */
+let token   = null;
+let timer   = null;
+let authWin = null;
+
+/* ═══════════════════════════════════════════════════════
+   CLOCK
+═══════════════════════════════════════════════════════ */
+setInterval(() => {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}, 1000);
+
+/* ═══════════════════════════════════════════════════════
+   CONFIG VALIDATION
+═══════════════════════════════════════════════════════ */
+function validateConfig() {
+  const errors = [];
+  if (!CONFIG.CLIENT_ID || CONFIG.CLIENT_ID === 'YOUR_CLIENT_ID_HERE')
+    errors.push('CLIENT_ID is not set — open the file and replace <code>YOUR_CLIENT_ID_HERE</code>.');
+  if (CONFIG.QUEUES.some(q => q.id.startsWith('QUEUE_ID')))
+    errors.push('Queue IDs are still placeholders — replace them with real UUIDs from Genesys Cloud.');
+  return errors;
+}
+
+/* ═══════════════════════════════════════════════════════
+   OAUTH2 IMPLICIT GRANT
+═══════════════════════════════════════════════════════ */
+function buildAuthUrl() {
+  const redirect = encodeURIComponent(window.location.href.split('#')[0]);
+  return `https://login.${CONFIG.REGION}/oauth/authorize`
+    + `?response_type=token`
+    + `&client_id=${encodeURIComponent(CONFIG.CLIENT_ID)}`
+    + `&redirect_uri=${redirect}`
+    + `&scope=${encodeURIComponent('analytics routing')}`;
+}
+
+function doLogin() {
+  const errors = validateConfig();
+  if (errors.length) {
+    document.getElementById('config-error').innerHTML =
+      '<strong>Fix these before logging in:</strong><br/>' + errors.join('<br/>');
+    document.getElementById('config-error').style.display = 'block';
+    return;
+  }
+  window.location.href = buildAuthUrl();
+}
+
+function parseToken() {
+  const hash = window.location.hash.substring(1);
+  if (!hash) return null;
+  const p = Object.fromEntries(new URLSearchParams(hash));
+  return p.access_token || null;
+}
+
+/* ═══════════════════════════════════════════════════════
+   API
+═══════════════════════════════════════════════════════ */
+async function api(path, opts = {}) {
+  const r = await fetch(`https://api.${CONFIG.REGION}${path}`, {
+    ...opts,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      ...(opts.headers || {}),
+    },
+  });
+  if (r.status === 401) { handleExpired(); throw new Error('401'); }
+  if (!r.ok) throw new Error(`${r.status}`);
+  return r.json();
+}
+
+function handleExpired() {
+  token = null;
+  clearInterval(timer);
+  setBadge('error', 'SESSION EXPIRED');
+  toast('Session expired — please sign in again.', true);
+  setTimeout(() => showAuth(), 2000);
+}
+
+/* ── Observations (live counts) ─────────────────────── */
+async function getObservations() {
+  const ids = CONFIG.QUEUES.map(q => q.id);
+  const body = {
+    filter: {
+      type: 'or',
+      predicates: ids.map(id => ({
+        type: 'dimension', dimension: 'queueId', operator: 'matches', value: id,
+      })),
+    },
+    metrics: ['oWaiting', 'oInteracting', 'oAlerting'],
+  };
+  const data = await api('/api/v2/analytics/queues/observations/query', {
+    method: 'POST', body: JSON.stringify(body),
+  });
+  const map = {};
+  for (const row of (data.results || [])) {
+    const qId = row.group?.queueId;
+    if (!qId) continue;
+    const s = {};
+    for (const d of (row.data || [])) s[d.metric] = d.stats?.count ?? 0;
+    map[qId] = {
+      waiting:     s.oWaiting     || 0,
+      interacting: s.oInteracting || 0,
+    };
+  }
+  return map;
+}
+
+/* ── Aggregates (today's stats) ─────────────────────── */
+async function getAggregates() {
+  const ids  = CONFIG.QUEUES.map(q => q.id);
+  const now  = new Date();
+  const bod  = new Date(now); bod.setHours(0,0,0,0);
+  const body = {
+    interval: `${bod.toISOString()}/${now.toISOString()}`,
+    groupBy:  ['queueId'],
+    filter: {
+      type: 'or',
+      predicates: ids.map(id => ({
+        type: 'dimension', dimension: 'queueId', operator: 'matches', value: id,
+      })),
+    },
+    metrics: ['nHandled', 'tWait'],
+    flattenMultivaluedDimensions: true,
+  };
+  const data = await api('/api/v2/analytics/queues/aggregates/query', {
+    method: 'POST', body: JSON.stringify(body),
+  });
+  const map = {};
+  for (const row of (data.results || [])) {
+    const qId = row.group?.queueId;
+    if (!qId) continue;
+    const s = {};
+    for (const d of (row.data || [])) {
+      for (const m of (d.metrics || [])) s[m.metric] = m.stats || {};
+    }
+    const handled  = s.nHandled?.count || 0;
+    const maxWaitMs= s.tWait?.max      || 0;
+    map[qId] = {
+      handledToday: handled,
+      maxWaitSec:   Math.round(maxWaitMs / 1000),
+    };
+  }
+  return map;
+}
+
+/* ── Agents on queue ─────────────────────────────────── */
+async function getAgents(queueId) {
+  try {
+    const d = await api(`/api/v2/routing/queues/${queueId}/users?pageSize=100&joined=true`);
+    return (d.entities || []).length;
+  } catch { return null; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN POLL
+═══════════════════════════════════════════════════════ */
+async function poll() {
+  try {
+    const [obs, agg] = await Promise.all([getObservations(), getAggregates()]);
+    const agentMap   = {};
+    await Promise.all(CONFIG.QUEUES.map(async q => {
+      agentMap[q.id] = await getAgents(q.id);
+    }));
+    render(obs, agg, agentMap);
+    setBadge('live', 'LIVE');
+  } catch (e) {
+    if (e.message !== '401') {
+      setBadge('error', 'ERROR');
+      toast('Fetch failed — retrying shortly.', true);
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════════════ */
+function fmtTime(sec) {
+  if (sec <= 0)   return { v: '0',              u: 'sec' };
+  if (sec < 60)   return { v: String(sec),       u: 'sec' };
+  if (sec < 3600) return { v: String(Math.round(sec/60)), u: 'min' };
+  return               { v: (sec/3600).toFixed(1), u: 'hr' };
+}
+
+function health(obs, agg) {
+  if (obs.waiting >= CONFIG.CRIT_WAITING || agg.maxWaitSec >= CONFIG.CRIT_WAIT_SEC)
+    return { label: 'CRITICAL', cls: 'crit' };
+  if (obs.waiting >= CONFIG.WARN_WAITING || agg.maxWaitSec >= CONFIG.WARN_WAIT_SEC)
+    return { label: 'WARNING',  cls: 'warn' };
+  return   { label: 'HEALTHY',  cls: 'ok' };
+}
+
+function waitColor(n) {
+  if (n >= CONFIG.CRIT_WAITING) return 'c-red';
+  if (n >= CONFIG.WARN_WAITING) return 'c-yellow';
+  return 'c-accent';
+}
+
+function render(obs, agg, agents) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  if (!CONFIG.QUEUES.length) {
+    grid.innerHTML = '<div class="empty"><div class="icon">📭</div><p>No queues configured.</p></div>';
+    return;
+  }
+
+  CONFIG.QUEUES.forEach((q, i) => {
+    const o  = obs[q.id]    || { waiting: 0, interacting: 0 };
+    const a  = agg[q.id]    || { handledToday: 0, maxWaitSec: 0 };
+    const ag = agents[q.id] ?? '—';
+    const h  = health(o, a);
+    const mw = fmtTime(a.maxWaitSec);
+    const barPct = Math.min(100, (o.waiting / (CONFIG.CRIT_WAITING * 1.5)) * 100);
+    const barColor = o.waiting >= CONFIG.CRIT_WAITING ? 'var(--red)'
+                   : o.waiting >= CONFIG.WARN_WAITING  ? 'var(--yellow)'
+                   : 'var(--accent)';
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = `${i * 0.05}s`;
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-name" title="${esc(q.label)}">${esc(q.label)}</div>
+        <div class="health ${h.cls}">${h.label}</div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Waiting</div>
+          <div class="stat-val ${waitColor(o.waiting)}">${o.waiting}</div>
+          <div class="stat-unit">interactions</div>
+          <div class="wait-bar">
+            <div class="wait-bar-fill" style="width:${barPct}%;background:${barColor}"></div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Longest Wait Today</div>
+          <div class="stat-val ${a.maxWaitSec >= CONFIG.CRIT_WAIT_SEC ? 'c-red' : a.maxWaitSec >= CONFIG.WARN_WAIT_SEC ? 'c-yellow' : ''}">${mw.v}</div>
+          <div class="stat-unit">${mw.u}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Agents on Queue</div>
+          <div class="stat-val c-green">${ag}</div>
+          <div class="stat-unit">staffed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Handled Today</div>
+          <div class="stat-val">${a.handledToday}</div>
+          <div class="stat-unit">interactions</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <span>Active: ${o.interacting} interacting</span>
+        <span>Refreshes every ${CONFIG.REFRESH_MS/1000}s</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════ */
+function setBadge(state, text) {
+  const b = document.getElementById('live-badge');
+  b.className = `live-badge ${state}`;
+  b.querySelector('.dot').className = `dot ${state === 'live' ? 'pulse' : ''}`;
+  document.getElementById('badge-text').textContent = text;
+}
+
+function showAuth() {
+  document.getElementById('auth-overlay').style.display = 'flex';
+}
+
+function toast(msg, err = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (err ? ' err' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = '', 4000);
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+/* ═══════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════ */
+(function boot() {
+  // Check for token in URL hash (post-redirect)
+  const t = parseToken();
+  if (t) {
+    token = t;
+    history.replaceState(null, '', window.location.pathname);
+    poll();
+    timer = setInterval(poll, CONFIG.REFRESH_MS);
+    return;
+  }
+
+  // Check config before showing auth
+  const errors = validateConfig();
+  if (errors.length) {
+    document.getElementById('config-error').innerHTML =
+      '<strong>Configuration needed:</strong><br/>' + errors.join('<br/>');
+    document.getElementById('config-error').style.display = 'block';
+    document.getElementById('auth-btn').disabled = true;
+    document.getElementById('auth-btn').style.opacity = '0.5';
+  }
+
+  // No token — show auth screen
+  showAuth();
+})();
+</script>
+</body>
+</html>
