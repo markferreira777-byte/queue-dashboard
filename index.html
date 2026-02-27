@@ -321,11 +321,11 @@
 <script>
 const CONFIG = {
   // 1️⃣  Your OAuth2 Client ID from Genesys Cloud Admin → Integrations → OAuth
-  CLIENT_ID: 'YOUR_CLIENT_ID_HERE',
+  CLIENT_ID: 'b08e2b01-639a-4723-a708-7e479696255f',
 
   // 2️⃣  Your Genesys Cloud region domain (examples below — uncomment yours)
-  REGION: 'mypurecloud.com',          // US East
-  // REGION: 'usw2.pure.cloud',       // US West
+  REGION: 'usw2.pure.cloud',       // US West
+  // REGION: 'mypurecloud.com',        // US East
   // REGION: 'cac1.pure.cloud',       // Canada
   // REGION: 'mypurecloud.ie',        // Ireland
   // REGION: 'mypurecloud.de',        // Germany
@@ -334,9 +334,9 @@ const CONFIG = {
 
   // 3️⃣  Queue IDs to monitor — find these in Admin → Routing → Queues (UUID in the URL)
   QUEUES: [
-    { id: 'QUEUE_ID_1', label: 'Support Team' },
-    { id: 'QUEUE_ID_2', label: 'Sales' },
-    { id: 'QUEUE_ID_3', label: 'Billing' },
+    { id: '4879c768-5ed5-4949-aff1-ccbb0e3dad99', label: 'Care Team POD1 Chat Queue' },
+    { id: '0187e19e-f563-441e-ad62-2965f43de61f', label: 'Care Team POD1 Email Queue' },
+    { id: '8aa2fa79-0bdb-4b2e-86f2-adce402a620c', label: 'Care Team POD1 Voice Queue' },
     // Add more queues here as needed...
   ],
 
