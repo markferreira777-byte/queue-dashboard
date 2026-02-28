@@ -3,290 +3,279 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Queue Monitor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <title>Care Team POD 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:        #060912;
-      --surface:   #0c1220;
-      --surface2:  #111828;
-      --border:    #1a2640;
-      --border2:   #223050;
-      --blue:      #60a5fa;
-      --cyan:      #22d3ee;
-      --green:     #34d399;
-      --orange:    #fb923c;
-      --red:       #f87171;
-      --text:      #f0f6ff;
-      --muted:     #4a6380;
-      --muted2:    #6b8aaa;
-      --font-h:    'Inter Tight', sans-serif;
-      --font-b:    'Inter', sans-serif;
-      --radius:    16px;
+      --bg:       #04070f;
+      --green:    #00e676;
+      --amber:    #ffab00;
+      --text:     #d0e4ff;
+      --muted:    #3a5880;
+      --font-h:   'Rajdhani', sans-serif;
+      --font-b:   'Exo 2', sans-serif;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg);
-      color: var(--text);
       font-family: var(--font-b);
       min-height: 100vh;
       background-image:
-        radial-gradient(ellipse 100% 60% at 20% -10%, rgba(96,165,250,0.06) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 40% at 80% 10%,  rgba(34,211,238,0.04) 0%, transparent 50%);
+        radial-gradient(ellipse 120% 80% at 50% -10%, rgba(10,30,80,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 20% 80%,  rgba(10,20,60,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 30% at 80% 90%,  rgba(20,10,60,0.3) 0%, transparent 50%);
     }
+
+    /* ── STARS ── */
+    .stars {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(1px 1px at 8% 18%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 23% 62%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 38% 9%,  rgba(200,220,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 57% 78%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 72% 33%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 84% 14%, rgba(200,220,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 91% 68%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 14% 87%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 33% 41%, rgba(180,210,255,0.55) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 76% 57%, rgba(180,210,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 4%  48%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 6%,  rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 91%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 44% 95%, rgba(255,255,255,0.25) 0%, transparent 100%);
+    }
+
+    /* ── WRAPPER ── */
+    .wrapper { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 3rem 2rem 4rem; }
 
     /* ── HEADER ── */
     header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 2.5rem; height: 66px;
-      background: rgba(6,9,18,0.8);
-      backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 50;
+      margin-bottom: 1.75rem;
     }
-    .brand { display: flex; align-items: center; gap: 0.9rem; }
+    .brand { display: flex; align-items: center; gap: 1rem; }
     .brand-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, #60a5fa 0%, #818cf8 100%);
-      display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
-      box-shadow: 0 0 24px rgba(96,165,250,0.35);
+      width: 48px; height: 48px; border-radius: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 30px rgba(58,128,255,0.35);
+      overflow: hidden; flex-shrink: 0;
     }
-    .brand-text {}
-    .brand-name { font-family: var(--font-h); font-size: 1.05rem; font-weight: 700; color: var(--text); letter-spacing: 0.01em; }
-    .brand-sub  { font-size: 0.65rem; font-weight: 500; color: var(--muted2); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 1px; }
-    .header-right { display: flex; align-items: center; gap: 1.5rem; }
-    .clock {
-      font-family: var(--font-h); font-size: 1.05rem; font-weight: 600;
-      color: var(--muted2); font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
-    }
+    .brand-icon img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0; }
+    .brand-name { font-family: var(--font-h); font-size: 1.6rem; font-weight: 700; color: #fff; letter-spacing: 0.02em; line-height: 1; }
+    .brand-sub  { font-size: 0.65rem; font-weight: 500; color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 3px; }
+    .header-line { flex: 1; height: 1px; margin: 0 1.5rem; background: linear-gradient(90deg, rgba(58,128,255,0.25), rgba(58,128,255,0.05)); }
+    .clock { font-family: var(--font-h); font-size: 1.5rem; font-weight: 600; color: var(--text); letter-spacing: 0.05em; font-variant-numeric: tabular-nums; }
     .live-pill {
-      display: flex; align-items: center; gap: 0.5rem;
-      font-family: var(--font-h); font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.32rem 1rem; border-radius: 20px; border: 1px solid; transition: all 0.4s;
+      display: flex; align-items: center; gap: 0.45rem;
+      font-family: var(--font-h); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.35rem 1.1rem; border-radius: 20px; border: 1.5px solid; transition: all 0.4s;
     }
-    .live-pill.live    { color: var(--green); border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.07); }
-    .live-pill.offline { color: var(--muted); border-color: var(--border); background: transparent; }
-    .live-pill.error   { color: var(--red);   border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.07); }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-    .dot.pulse { animation: dotpulse 2s ease-in-out infinite; }
-    @keyframes dotpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.25;transform:scale(0.6)} }
+    .live-pill.live    { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.07); box-shadow: 0 0 20px rgba(0,230,118,0.2); }
+    .live-pill.offline { color: var(--muted); border-color: rgba(58,128,255,0.2); background: transparent; }
+    .live-pill.error   { color: #ff5555; border-color: rgba(255,85,85,0.45); background: rgba(255,85,85,0.07); }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .live-dot.pulse { animation: livepulse 1.8s ease-in-out infinite; }
+    @keyframes livepulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.6)} }
 
-    /* ── MAIN ── */
-    main { padding: 2.5rem; max-width: 1600px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 1.5rem;
-      display: flex; align-items: center; gap: 0.75rem;
+    /* ── HEALTH BAR ── */
+    .health-bar {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      padding: 0.75rem 1.25rem;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(58,128,255,0.2); border-radius: 10px;
+      margin-bottom: 1.75rem; font-family: var(--font-h); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.06em; backdrop-filter: blur(10px);
     }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+    .health-label  { color: var(--muted); white-space: nowrap; }
+    .health-status { font-weight: 800; letter-spacing: 0.08em; }
+    .health-status.ok   { color: var(--green); }
+    .health-status.crit { color: #ff5555; }
+    .health-div { width: 1px; height: 14px; background: rgba(58,128,255,0.2); }
+    .q-pill { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 600; }
+    .q-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .q-dot.g { background: var(--green); box-shadow: 0 0 6px rgba(0,230,118,0.8); }
+    .q-dot.r { background: #ff4444; box-shadow: 0 0 8px rgba(255,68,68,1); animation: livepulse 1s ease-in-out infinite; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.25rem; }
+    /* ── GRID ── */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 
     /* ── CARD ── */
     .card {
-      background: var(--surface);
-      border: 1px solid #90adc6;
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color 0.4s, box-shadow 0.4s, transform 0.3s;
-      position: relative;
+      border-radius: 16px; overflow: hidden; position: relative;
+      background: rgba(8,16,40,0.7); backdrop-filter: blur(20px);
+      transition: transform 0.3s;
     }
-    /* first-load animation only on cards that have the .new class */
-    .card.new { animation: rise 0.45s cubic-bezier(0.16,1,0.3,1) both; }
-    @keyframes rise { from{opacity:0;transform:translateY(14px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .card.new { animation: cardin 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes cardin { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .card:hover { transform: translateY(-2px); }
 
+    /* glowing border via pseudo */
     .card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(96,165,250,0.4), transparent);
-      opacity: 0; transition: opacity 0.3s;
+      content: ''; position: absolute; inset: 0; border-radius: 16px; padding: 1.5px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
     }
-    .card:hover { border-color: var(--border2); box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(96,165,250,0.04); transform: translateY(-2px); }
-    .card:hover::before { opacity: 1; }
+    .card.healthy::before  { background: linear-gradient(135deg, rgba(0,230,118,0.5), rgba(26,111,255,0.15), rgba(0,230,118,0.5)); }
+    .card.no-agents::before { background: linear-gradient(135deg, rgba(255,58,58,0.7), rgba(255,120,50,0.15), rgba(255,58,58,0.7)); animation: critglow 2s ease-in-out infinite; }
+    .card.crit::before      { background: linear-gradient(135deg, rgba(255,58,58,0.7), rgba(255,120,50,0.15), rgba(255,58,58,0.7)); animation: critglow 2s ease-in-out infinite; }
+    .card.warn::before      { background: linear-gradient(135deg, rgba(255,171,0,0.55), rgba(255,100,0,0.15), rgba(255,171,0,0.55)); }
+    .card.ok::before        { background: linear-gradient(135deg, rgba(26,111,255,0.5), rgba(26,111,255,0.1), rgba(26,111,255,0.5)); }
+    @keyframes critglow { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    .card.crit { border-color: #90adc6; box-shadow: none; }
-    .card.crit::before { opacity: 0; }
-    .card.warn { border-color: #90adc6; }
-    .card.no-agents { border-color: #90adc6; }
+    .card.healthy   { box-shadow: 0 0 40px rgba(0,230,118,0.08),  0 20px 60px rgba(0,0,0,0.5); }
+    .card.no-agents { box-shadow: 0 0 40px rgba(255,58,58,0.14),  0 20px 60px rgba(0,0,0,0.5); }
+    .card.crit      { box-shadow: 0 0 40px rgba(255,58,58,0.14),  0 20px 60px rgba(0,0,0,0.5); }
+    .card.warn      { box-shadow: 0 0 40px rgba(255,171,0,0.09),  0 20px 60px rgba(0,0,0,0.5); }
+    .card.ok        { box-shadow: 0 0 40px rgba(26,111,255,0.08), 0 20px 60px rgba(0,0,0,0.5); }
 
-    /* ── CARD HEADER ── */
-    .card-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.1rem 1.3rem 1rem;
-    }
-    .card-name {
-      font-family: var(--font-h); font-size: 0.8rem; font-weight: 700;
-      letter-spacing: 0.05em; text-transform: uppercase; color: var(--text);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;
-    }
+    /* ── CARD HEAD ── */
+    .card-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem 0.85rem; }
+    .card-name { font-family: var(--font-h); font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
     .badge {
-      font-family: var(--font-h); font-size: 0.58rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.22rem 0.65rem; border-radius: 20px; border: 1px solid;
-      white-space: nowrap; flex-shrink: 0; transition: all 0.4s;
+      font-family: var(--font-h); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.22rem 0.7rem; border-radius: 20px; border: 1px solid; white-space: nowrap; flex-shrink: 0; transition: all 0.4s;
     }
-    .badge.ok        { color: var(--green);  border-color: rgba(52,211,153,0.4);   background: rgba(52,211,153,0.08); }
-    .badge.warn      { color: var(--orange); border-color: rgba(251,146,60,0.4);   background: rgba(251,146,60,0.08); }
-    .badge.crit      { color: var(--red);    border-color: rgba(248,113,113,0.4);  background: rgba(248,113,113,0.08); }
-    .badge.no-agents {
-      color: #e63946; border-color: #e63946; background: rgba(230,57,70,0.1);
-      animation: badgepulse 1.8s ease-in-out infinite;
-    }
-    @keyframes badgepulse {
-      0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(248,113,113,0); }
-      50%      { opacity:0.75; box-shadow: 0 0 0 4px rgba(248,113,113,0.15); }
-    }
+    .badge.ok        { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.07); }
+    .badge.warn      { color: var(--amber); border-color: rgba(255,171,0,0.45);  background: rgba(255,171,0,0.07); }
+    .badge.crit      { color: #ff5555;      border-color: rgba(255,85,85,0.5);   background: rgba(255,85,85,0.08); }
+    .badge.no-agents { color: #ff4444;      border-color: rgba(255,68,68,0.6);   background: rgba(255,68,68,0.1); animation: critglow 1.2s ease-in-out infinite; }
+    .badge.healthy   { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.07); }
 
-    /* ── DIVIDER ── */
-    .card-div { height: 1px; background: var(--border); margin: 0 1.3rem; }
-
-    /* ── STATS — 3 columns ── */
+    /* ── STATS ── */
     .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; }
-    .stat {
-      padding: 1.25rem 0.6rem 1.1rem;
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.25rem;
-    }
-    .stat:last-child { border-right: none; }
-
-    .stat-label {
-      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #b8d4ee;
-    }
-    .stat-val {
-      font-family: var(--font-h); font-size: 2.9rem; font-weight: 700;
-      line-height: 1; letter-spacing: -0.03em;
-      transition: color 0.6s, opacity 0.3s;
-    }
-    .stat-unit {
-      font-size: 0.62rem; color: #9ab8d4; font-weight: 500; letter-spacing: 0.06em;
-    }
-
-    /* number flash on update */
+    .stat  { padding: 1.15rem 0.6rem 0.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .stat-label { font-family: var(--font-h); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7aafd4; margin-bottom: 0.35rem; }
+    .stat-val   { font-family: var(--font-h); font-size: 2.8rem; font-weight: 700; line-height: 1; letter-spacing: -0.01em; transition: color 0.5s; }
+    .stat-unit  { font-size: 0.6rem; color: #7aafd4; margin-top: 0.2rem; letter-spacing: 0.06em; }
     @keyframes numflash { 0%{opacity:0.3;transform:scale(0.94)} 100%{opacity:1;transform:scale(1)} }
     .stat-val.flash { animation: numflash 0.35s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes agentpulse { 0%,100%{opacity:1;text-shadow:0 0 0px rgba(255,68,68,0)} 50%{opacity:0.5;text-shadow:0 0 22px rgba(255,68,68,0.9)} }
+    .c-agent-zero { color: #ff4444; animation: agentpulse 1.6s ease-in-out infinite; }
 
-    /* color classes */
-    .c-blue      { color: var(--blue); }
-    .c-red       { color: var(--red); }
-    .c-green     { color: var(--green); }
-    .c-slate     { color: #d9deff; }
+    /* ── WAVE ROW ── */
+    .wave-row  { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0 0 0.7rem; }
+    .wave-cell { display: flex; align-items: center; justify-content: center; height: 22px; position: relative; overflow: hidden; }
+    .wave-cell canvas { display: block; position: absolute; left: 0; top: 0; }
 
-    /* zero-agents pulse */
-    @keyframes agentpulse {
-      0%,100% { opacity:1; text-shadow: 0 0 0px rgba(230,57,70,0); }
-      50%      { opacity:0.55; text-shadow: 0 0 22px rgba(230,57,70,0.9); }
-    }
-    .c-agent-zero { color: #e63946; animation: agentpulse 1.6s ease-in-out infinite; }
-
-    /* ── CARD FOOTER ── */
+    /* ── CARD FOOT ── */
     .card-foot {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0.65rem 1.3rem;
-      background: rgba(0,0,0,0.15);
-      border-top: 1px solid var(--border);
-      font-size: 0.65rem; color: #7a9ab8;
+      padding: 0.6rem 1.25rem; font-size: 0.65rem; color: var(--muted);
     }
-    .foot-left { display: flex; align-items: center; gap: 0.4rem; }
-    .foot-dot  { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: dotpulse 2s ease-in-out infinite; }
+    .foot-left { display: flex; align-items: center; gap: 0.45rem; }
+    .act-dot   { width: 5px; height: 5px; border-radius: 50%; }
+    .act-dot.live { background: var(--green); box-shadow: 0 0 6px rgba(0,230,118,0.8); animation: livepulse 2s ease-in-out infinite; }
+    .act-dot.dead { background: var(--muted); }
+
+    /* ── TIMESTAMPS ── */
+    .ts-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 0.4rem; }
+    .ts-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.6rem; color: rgba(58,128,255,0.3); letter-spacing: 0.06em; padding: 0 0.25rem; }
+    .ts-item::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(58,128,255,0.18), transparent); }
+    .ts-item.crit       { color: rgba(255,58,58,0.35); }
+    .ts-item.crit::after { background: linear-gradient(90deg, rgba(255,58,58,0.2), transparent); }
 
     /* ── AUTH OVERLAY ── */
     #auth-overlay {
       position: fixed; inset: 0; z-index: 200;
       background: var(--bg);
-      background-image:
-        radial-gradient(ellipse 70% 50% at 50% 35%, rgba(96,165,250,0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 30% at 80% 70%, rgba(34,211,238,0.04) 0%, transparent 50%);
+      background-image: radial-gradient(ellipse 70% 50% at 50% 40%, rgba(20,60,160,0.15) 0%, transparent 70%);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 1.5rem; padding: 2rem;
     }
     .auth-logo {
-      width: 64px; height: 64px; border-radius: 18px;
-      background: linear-gradient(135deg, #60a5fa 0%, #818cf8 100%);
-      display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
-      box-shadow: 0 0 60px rgba(96,165,250,0.3); margin-bottom: 0.25rem;
+      width: 72px; height: 72px; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 60px rgba(58,128,255,0.4); overflow: hidden;
     }
-    #auth-overlay h1 {
-      font-family: var(--font-h); font-size: 1.9rem; font-weight: 700;
-      color: var(--text); letter-spacing: -0.01em;
-    }
-    #auth-overlay p { color: var(--muted2); max-width: 380px; text-align: center; line-height: 1.8; font-size: 0.875rem; }
+    .auth-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #auth-overlay h1 { font-family: var(--font-h); font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: 0.02em; }
+    #auth-overlay p  { color: var(--muted); font-size: 0.875rem; text-align: center; max-width: 360px; line-height: 1.8; }
     .btn-auth {
       display: inline-flex; align-items: center; gap: 0.6rem;
-      background: linear-gradient(135deg, #60a5fa 0%, #818cf8 100%);
-      color: #fff; font-family: var(--font-h); font-size: 0.9rem; font-weight: 700;
-      letter-spacing: 0.04em; padding: 0.9rem 2.6rem; border: none; border-radius: 12px;
-      cursor: pointer; transition: all 0.25s;
-      box-shadow: 0 4px 24px rgba(96,165,250,0.35);
+      background: linear-gradient(135deg, #3a80ff, #1a50d0);
+      color: #fff; font-family: var(--font-h); font-size: 0.95rem; font-weight: 700;
+      letter-spacing: 0.06em; padding: 0.9rem 2.6rem; border: none; border-radius: 12px;
+      cursor: pointer; transition: all 0.25s; box-shadow: 0 0 40px rgba(58,128,255,0.4);
     }
-    .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(96,165,250,0.5); }
+    .btn-auth:hover  { transform: translateY(-2px); box-shadow: 0 0 60px rgba(58,128,255,0.6); }
     .btn-auth:active { transform: translateY(0); }
 
     /* ── TOAST ── */
     #toast {
       position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 300;
-      background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px;
-      padding: 0.8rem 1.2rem; font-size: 0.82rem; max-width: 300px;
-      opacity: 0; transform: translateY(12px) scale(0.95);
-      transition: all 0.3s cubic-bezier(0.16,1,0.3,1); pointer-events: none;
+      background: rgba(8,16,40,0.92); border: 1px solid rgba(58,128,255,0.3); border-radius: 10px;
+      padding: 0.8rem 1.2rem; font-size: 0.82rem; max-width: 300px; color: var(--text);
+      opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none;
+      backdrop-filter: blur(20px);
     }
-    #toast.show { opacity: 1; transform: translateY(0) scale(1); }
-    #toast.err  { border-left: 3px solid var(--red); }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.err  { border-color: rgba(255,85,85,0.5); }
 
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(58,128,255,0.2); border-radius: 4px; }
   </style>
 </head>
 <body>
 
+<div class="stars"></div>
+
 <script>
 const CONFIG = {
   CLIENT_ID: 'b08e2b01-639a-4723-a708-7e479696255f',
-  REGION: 'usw2.pure.cloud',
+  REGION:    'usw2.pure.cloud',
   QUEUES: [
-    { id: '4879c768-5ed5-4949-aff1-ccbb0e3dad99', label: 'POD1 Chat Queue' },
-    { id: '0187e19e-f563-441e-ad62-2965f43de61f', label: 'POD1 Email Queue' },
-    { id: '8aa2fa79-0bdb-4b2e-86f2-adce402a620c', label: 'POD1 Voice Queue' },
-    { id: '17d0d069-2abe-4610-b21e-5b05e03996c2', label: 'Care Team Voice' },
+    { id: '4879c768-5ed5-4949-aff1-ccbb0e3dad99', label: 'Chat Queue'       },
+    { id: '0187e19e-f563-441e-ad62-2965f43de61f', label: 'Email Queue'      },
+    { id: '8aa2fa79-0bdb-4b2e-86f2-adce402a620c', label: 'Voice Queue'      },
+    { id: '17d0d069-2abe-4610-b21e-5b05e03996c2', label: 'Care Team Voice'  },
   ],
   REFRESH_MS:       60000,
   WARN_WAITING:     5,
   CRIT_WAITING:     10,
   LONGEST_WAIT_RED: 300,
 };
+const LOGO_SRC = "data:image/png;base64,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";
 </script>
 
-<header>
-  <div class="brand">
-    <div class="brand-icon">📡</div>
-    <div class="brand-text">
-      <div class="brand-name">Queue Monitor</div>
-      <div class="brand-sub">Live Dashboard</div>
+<div class="wrapper">
+  <header>
+    <div class="brand">
+      <div class="brand-icon"><img id="header-logo" src="" alt="SWH"/></div>
+      <div>
+        <div class="brand-name">Care Team POD 1</div>
+        <div class="brand-sub">Live Queue Dashboard</div>
+      </div>
     </div>
-  </div>
-  <div class="header-right">
-    <div class="clock" id="clock">--:--:--</div>
-    <div class="live-pill offline" id="live-badge">
-      <span class="dot"></span>
-      <span id="badge-text">OFFLINE</span>
+    <div class="header-line"></div>
+    <div style="display:flex;align-items:center;gap:1.5rem">
+      <div class="clock" id="clock">--:--:-- --</div>
+      <div class="live-pill offline" id="live-badge">
+        <span class="live-dot" id="live-dot"></span>
+        <span id="badge-text">OFFLINE</span>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<main>
-  <div class="section-label">Real-time Queue Status</div>
+  <div class="health-bar" id="health-bar">
+    <span class="health-label">Overall Queue Health:</span>
+    <span class="health-status ok" id="overall-status">CONNECTING</span>
+    <span class="health-div"></span>
+    <div id="queue-pills" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap"></div>
+  </div>
+
   <div class="grid" id="grid">
     <div style="grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--muted)">
-      <div style="font-size:2rem;margin-bottom:1rem;opacity:0.25">⏳</div>
-      <div style="font-size:0.85rem">Connecting…</div>
+      <div style="font-size:0.9rem">Connecting…</div>
     </div>
   </div>
-</main>
+  <div class="ts-row" id="ts-row"></div>
+</div>
 
 <div id="auth-overlay" style="display:none">
-  <div class="auth-logo">📡</div>
-  <h1>Queue Monitor</h1>
+  <div class="auth-logo"><img id="auth-logo" src="" alt="SWH"/></div>
+  <h1>Care Team POD 1</h1>
   <p>Sign in with your Genesys Cloud account to start monitoring queue statistics in real time.</p>
   <button class="btn-auth" onclick="doLogin()">🔐 Sign in with Genesys Cloud</button>
 </div>
@@ -294,33 +283,43 @@ const CONFIG = {
 <div id="toast"></div>
 
 <script>
-let token = null;
-let timer = null;
-let firstRender = true;
+// ── INJECT LOGO ──
+document.querySelectorAll('#header-logo, #auth-logo').forEach(el => el.src = LOGO_SRC);
 
-/* CLOCK */
+// ── STATE ──
+let token = null, timer = null, firstRender = true, lastUpdated = null, secondsTimer = null;
+
+// ── CLOCK ──
 setInterval(() => {
   document.getElementById('clock').textContent =
-    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true });
 }, 1000);
 
-/* OAUTH */
+// ── COUNTDOWN ──
+function startCountdown() {
+  lastUpdated = Date.now();
+  if (secondsTimer) clearInterval(secondsTimer);
+  secondsTimer = setInterval(() => {
+    const s = Math.round((Date.now() - lastUpdated) / 1000);
+    document.querySelectorAll('.ts-text').forEach(el => {
+      el.textContent = `Last updated ${s} second${s !== 1 ? 's' : ''} ago`;
+    });
+  }, 1000);
+}
+
+// ── OAUTH ──
 function buildAuthUrl() {
   const redirect = encodeURIComponent(window.location.href.split('#')[0]);
-  return `https://login.${CONFIG.REGION}/oauth/authorize`
-    + `?response_type=token`
-    + `&client_id=${encodeURIComponent(CONFIG.CLIENT_ID)}`
-    + `&redirect_uri=${redirect}`
-    + `&scope=${encodeURIComponent('analytics:readonly routing:readonly')}`;
+  return `https://login.${CONFIG.REGION}/oauth/authorize?response_type=token&client_id=${encodeURIComponent(CONFIG.CLIENT_ID)}&redirect_uri=${redirect}&scope=${encodeURIComponent('analytics:readonly routing:readonly')}`;
 }
-function doLogin() { window.location.href = buildAuthUrl(); }
+function doLogin()    { window.location.href = buildAuthUrl(); }
 function parseToken() {
   const hash = window.location.hash.substring(1);
   if (!hash) return null;
   return Object.fromEntries(new URLSearchParams(hash)).access_token || null;
 }
 
-/* API */
+// ── API ──
 async function api(path, opts = {}) {
   const r = await fetch(`https://api.${CONFIG.REGION}${path}`, {
     ...opts,
@@ -337,27 +336,25 @@ function handleExpired() {
   setTimeout(() => showAuth(), 2000);
 }
 
-/* OBSERVATIONS */
+// ── OBSERVATIONS ──
 async function getObservations() {
   const ids = CONFIG.QUEUES.map(q => q.id);
-  const body = {
-    filter: {
-      type: 'and',
-      clauses: [{ type: 'or', predicates: ids.map(id => ({ type: 'dimension', dimension: 'queueId', value: id })) }],
-    },
-    groupBy: ['queueId'],
-    metrics: ['oWaiting', 'oInteracting', 'oAlerting', 'oLongestWaiting'],
-  };
-  const data = await api('/api/v2/analytics/queues/observations/query', { method: 'POST', body: JSON.stringify(body) });
+  const data = await api('/api/v2/analytics/queues/observations/query', {
+    method: 'POST',
+    body: JSON.stringify({
+      filter: { type:'and', clauses:[{ type:'or', predicates: ids.map(id => ({ type:'dimension', dimension:'queueId', value:id })) }] },
+      groupBy: ['queueId'],
+      metrics: ['oWaiting','oInteracting','oAlerting','oLongestWaiting'],
+    }),
+  });
   const map = {};
   for (const row of (data.results || [])) {
-    const qId = row.group?.queueId;
-    if (!qId) continue;
-    if (!map[qId]) map[qId] = { waiting: 0, interacting: 0, alerting: 0, longestWaitSec: 0 };
+    const qId = row.group?.queueId; if (!qId) continue;
+    if (!map[qId]) map[qId] = { waiting:0, interacting:0, alerting:0, longestWaitSec:0 };
     for (const d of (row.data || [])) {
       if (d.metric === 'oLongestWaiting') {
         const startMs = d.stats?.calculatedMetricValue ?? 0;
-        const secs = startMs > 0 ? Math.round((Date.now() - startMs) / 1000) : 0;
+        const secs = startMs > 0 ? Math.round((Date.now()-startMs)/1000) : 0;
         if (secs > map[qId].longestWaitSec) map[qId].longestWaitSec = secs;
       }
       if (d.metric === 'oWaiting')     map[qId].waiting     += d.stats?.count ?? 0;
@@ -368,7 +365,7 @@ async function getObservations() {
   return map;
 }
 
-/* AGENTS */
+// ── AGENTS ──
 async function getAgents(queueId) {
   try {
     const d = await api(`/api/v2/routing/queues/${queueId}/users?pageSize=50&pageNumber=1&joined=false&sortBy=name&sortOrder=asc&expand=presence`);
@@ -376,7 +373,7 @@ async function getAgents(queueId) {
   } catch { return null; }
 }
 
-/* POLL */
+// ── POLL ──
 async function poll() {
   try {
     const obs = await getObservations();
@@ -384,168 +381,353 @@ async function poll() {
     await Promise.all(CONFIG.QUEUES.map(async q => { agentMap[q.id] = await getAgents(q.id); }));
     render(obs, agentMap);
     setBadge('live', 'LIVE');
-  } catch (e) {
-    if (e.message !== '401') { setBadge('error', 'ERROR'); toast('Fetch failed — retrying shortly.', true); }
+    startCountdown();
+  } catch(e) {
+    if (e.message !== '401') { setBadge('error', 'ERROR'); toast('Fetch failed — retrying.', true); }
   }
 }
 
-/* FORMAT TIME */
+// ── FORMAT ──
 function fmtTime(sec) {
-  if (sec <= 0)   return { v: '0',                        u: 'sec' };
-  if (sec < 60)   return { v: String(sec),                u: 'sec' };
-  if (sec < 3600) return { v: String(Math.round(sec/60)), u: 'min' };
-  return                 { v: (sec/3600).toFixed(1),      u: 'hr'  };
+  if (sec <= 0)   return { v:'0',                        u:'sec' };
+  if (sec < 60)   return { v:String(sec),                u:'sec' };
+  if (sec < 3600) return { v:String(Math.round(sec/60)), u:'min' };
+  return                 { v:(sec/3600).toFixed(1),      u:'hr'  };
 }
 
-/* WAITING COLOR: white at 0, bright blue >0 */
-function waitingColor(n) {
-  if (n <= 0) return '#f0f6ff';  // white when zero
-  return '#5febfe';              // bright cyan-blue for any waiting
+// ── COLOR HELPERS ──
+function agentNumColor(n) {
+  if (n <= 0) return null; // use c-agent-zero class
+  const t = Math.min(Math.max(n-1,0),3)/3; // 0 at n=1, 1 at n=4+
+  const r = Math.round(40  + (0   - 40)  * t);
+  const g = Math.round(160 + (240 - 160) * t);
+  const b = Math.round(90  + (120 - 90)  * t);
+  return `rgb(${r},${g},${b})`;
 }
-
-/* HEALTH */
+function waitNumColor(n) {
+  if (n === 0) return '#d9deff';   // light blue when zero
+  if (n <= 2)  return '#ff9933';   // orange
+  return '#ff4444';                // red
+}
 function health(waiting, agents) {
-  if (agents === 0 || agents === null) return { label: 'No Agents On-Queue', cls: 'no-agents' };
-  if (waiting >= CONFIG.CRIT_WAITING)  return { label: 'Critical',           cls: 'crit' };
-  if (waiting >= CONFIG.WARN_WAITING)  return { label: 'Warning',            cls: 'warn' };
-  return                                      { label: 'Healthy',            cls: 'ok' };
+  if (agents === 0 || agents === null) return { label:'No Agents On-Queue', cls:'no-agents' };
+  if (waiting >= CONFIG.CRIT_WAITING)  return { label:'Critical',           cls:'crit'      };
+  if (waiting >= CONFIG.WARN_WAITING)  return { label:'Warning',            cls:'warn'      };
+  return                                      { label:'Healthy',            cls:'healthy'   };
+}
+function cardClass(waiting, agents) {
+  if (agents === 0 || agents === null) return 'no-agents';
+  if (waiting >= CONFIG.CRIT_WAITING)  return 'crit';
+  if (waiting >= CONFIG.WARN_WAITING)  return 'warn';
+  return 'healthy';
 }
 
-/* SMOOTH UPDATE — update stat values in place with a flash animation */
-function updateStat(el, newVal, newUnit, newColorClass) {
-  const valEl  = el.querySelector('.stat-val');
-  const unitEl = el.querySelector('.stat-unit');
-  if (!valEl || !unitEl) return;
-
-  const oldVal = valEl.textContent;
-  if (oldVal === String(newVal) && unitEl.textContent === newUnit) return; // no change
-
-  // remove all color classes and re-add correct one
-  valEl.className = `stat-val ${newColorClass}`;
-  valEl.textContent = newVal;
-  unitEl.textContent = newUnit;
-
-  // trigger flash animation
-  valEl.classList.remove('flash');
-  void valEl.offsetWidth; // reflow
-  valEl.classList.add('flash');
+// ── WAVE ENGINE ──
+const WAVE_COLORS = {
+  waitBlue:   { line:'rgba(180,210,255,0.45)', dot:'rgba(200,225,255,0.9)', glow:'rgba(180,210,255,0.5)' },
+  waitOrange: { line:'rgba(255,153,50,0.65)',  dot:'rgba(255,153,50,1)',    glow:'rgba(255,140,40,0.8)'  },
+  waitRed:    { line:'rgba(255,70,70,0.65)',   dot:'rgba(255,80,80,1)',     glow:'rgba(255,60,60,0.8)'   },
+  agRed:      { line:'rgba(255,70,70,0.6)',    dot:'rgba(255,80,80,1)',     glow:'rgba(255,60,60,0.8)'   },
+  calm:       { line:'rgba(80,120,220,0.3)',   dot:'rgba(140,170,255,0.75)',glow:'rgba(120,150,255,0.5)' },
+};
+function waitWaveColor(n)  {
+  if (n === 0) return WAVE_COLORS.waitBlue;
+  if (n <= 2)  return WAVE_COLORS.waitOrange;
+  return WAVE_COLORS.waitRed;
+}
+function agentWaveColor(n) {
+  if (n <= 0) return WAVE_COLORS.agRed;
+  const t = Math.min(n,5)/5;
+  const sr = Math.round(80  + (0   - 80)  * t);
+  const sg = Math.round(160 + (210 - 160) * t);
+  const sb = Math.round(255 + (110 - 255) * t);
+  const dr = Math.round(100 + (0   - 100) * t);
+  const dg = Math.round(190 + (230 - 190) * t);
+  const db = Math.round(255 + (118 - 255) * t);
+  return { line:`rgba(${sr},${sg},${sb},0.55)`, dot:`rgba(${dr},${dg},${db},1)`, glow:`rgba(${dr},${dg},${db},0.7)` };
+}
+function waveProfile(type, val) {
+  if (type === 'wait') {
+    if (val === 0) return { amp:1.0, noiseAmt:0,   speed:0.4,  freq:0.9  };
+    if (val <= 2)  return { amp:1.8, noiseAmt:0.4, speed:0.7,  freq:1.2  };
+    return               { amp:1.6, noiseAmt:1.3, speed:1.1,  freq:1.6  };
+  }
+  if (type === 'agent') {
+    if (val === 0) return { amp:1.6, noiseAmt:1.3, speed:1.2,  freq:1.7  };
+    if (val <= 2)  return { amp:1.6, noiseAmt:0.3, speed:0.7,  freq:1.2  };
+    return               { amp:0.9, noiseAmt:0,   speed:0.4,  freq:0.9  };
+  }
+  return { amp:0.8, noiseAmt:0, speed:0.35, freq:0.85 };
 }
 
-/* RENDER */
+const waveRegistry = {}; // queueId → [{canvas,color,...,t,dotFrac,noiseTable}]
+
+function initWaves(queueId, waiting, agents, phaseBase) {
+  const cfgs = [
+    { color: waitWaveColor(waiting),  ...waveProfile('wait',  waiting), phaseOff: phaseBase       },
+    { color: agentWaveColor(agents),  ...waveProfile('agent', agents),  phaseOff: phaseBase + 1.1 },
+    { color: WAVE_COLORS.calm,        ...waveProfile('calm',  0),       phaseOff: phaseBase + 2.3 },
+  ];
+  return cfgs.map((cfg, wi) => {
+    const canvas = document.getElementById(`wc-${queueId}-${wi}`);
+    if (!canvas) return null;
+    return {
+      canvas,
+      ...cfg,
+      t: 0,
+      dotFrac: Math.random(),
+      noiseTable: Array.from({length:64}, () => (Math.random()-0.5)*2),
+    };
+  }).filter(Boolean);
+}
+
+function updateWaveColors(entry, waiting, agents) {
+  if (!entry) return;
+  entry[0].color = waitWaveColor(waiting);
+  Object.assign(entry[0], waveProfile('wait', waiting));
+  entry[1].color = agentWaveColor(agents);
+  Object.assign(entry[1], waveProfile('agent', agents));
+}
+
+function cosInterp(a, b, t) {
+  const mu = (1 - Math.cos(t * Math.PI)) / 2;
+  return a*(1-mu) + b*mu;
+}
+function sampleNoise(table, x) {
+  const n = table.length;
+  const xi = Math.floor(x) % n;
+  const xj = (xi+1) % n;
+  return cosInterp(table[xi], table[xj], x - Math.floor(x));
+}
+
+function drawWave(w) {
+  const canvas = w.canvas;
+  const cell   = canvas.parentElement;
+  if (!cell) return;
+  const dpr = window.devicePixelRatio || 1;
+  const CW  = cell.clientWidth;
+  const CH  = cell.clientHeight;
+  if (!CW || !CH) return;
+  if (canvas.width  !== Math.round(CW*dpr) || canvas.height !== Math.round(CH*dpr)) {
+    canvas.width  = Math.round(CW*dpr);
+    canvas.height = Math.round(CH*dpr);
+    canvas.style.width  = CW + 'px';
+    canvas.style.height = CH + 'px';
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,CW,CH);
+
+  const pad   = CW * 0.20;
+  const ww    = CW - pad*2;
+  const mid   = CH/2;
+  const freq  = (Math.PI*2)/ww * w.freq;
+  const phase = w.t * w.speed * 3.2 + w.phaseOff;
+
+  const N = 120;
+  const pts = [];
+  for (let i=0; i<=N; i++) {
+    const frac = i/N;
+    const x    = pad + frac*ww;
+    let   y    = mid + w.amp * Math.sin(freq*frac*ww - phase);
+    if (w.noiseAmt > 0) y += w.noiseAmt * sampleNoise(w.noiseTable, frac*12 + w.t*0.8);
+    const taper  = Math.min(frac/0.10, 1, (1-frac)/0.10);
+    const te     = taper*taper*(3-2*taper);
+    pts.push({ x, y: mid + (y-mid)*te });
+  }
+
+  ctx.beginPath();
+  ctx.strokeStyle = w.color.line;
+  ctx.lineWidth   = 1.4;
+  ctx.lineCap     = 'round';
+  ctx.lineJoin    = 'round';
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for (let i=1; i<pts.length-1; i++) {
+    const mx = (pts[i].x+pts[i+1].x)/2;
+    const my = (pts[i].y+pts[i+1].y)/2;
+    ctx.quadraticCurveTo(pts[i].x,pts[i].y,mx,my);
+  }
+  ctx.lineTo(pts[pts.length-1].x, pts[pts.length-1].y);
+  ctx.stroke();
+
+  w.dotFrac = (w.dotFrac + w.speed*0.003) % 1;
+  const dot = pts[Math.min(Math.round(w.dotFrac*N), pts.length-1)];
+  const dotR = 2.6;
+  const grd = ctx.createRadialGradient(dot.x,dot.y,0,dot.x,dot.y,dotR*5);
+  grd.addColorStop(0,   w.color.glow);
+  grd.addColorStop(0.4, w.color.glow.replace(/[\d.]+\)$/, '0.25)'));
+  grd.addColorStop(1,   w.color.glow.replace(/[\d.]+\)$/, '0)'));
+  ctx.beginPath(); ctx.fillStyle = grd; ctx.arc(dot.x,dot.y,dotR*5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.fillStyle = w.color.dot; ctx.arc(dot.x,dot.y,dotR,0,Math.PI*2); ctx.fill();
+}
+
+let allWaves = [];
+let lastTs   = null;
+function animLoop(ts) {
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min((ts-lastTs)/1000, 0.05);
+  lastTs = ts;
+  allWaves.forEach(w => { w.t += dt; drawWave(w); });
+  requestAnimationFrame(animLoop);
+}
+requestAnimationFrame(animLoop);
+
+// ── RENDER ──
 function render(obs, agents) {
   const grid = document.getElementById('grid');
+  if (firstRender) grid.innerHTML = '';
+
+  // Health bar
+  let worst = 'ok';
+  const pillsHtml = CONFIG.QUEUES.map(q => {
+    const o  = obs[q.id] || { waiting:0 };
+    const ag = agents[q.id] ?? null;
+    const cc = cardClass(o.waiting, ag);
+    if (cc === 'no-agents' || cc === 'crit') worst = 'crit';
+    else if (cc === 'warn' && worst !== 'crit') worst = 'warn';
+    const dotCls  = (cc === 'no-agents' || cc === 'crit') ? 'r' : cc === 'warn' ? 'r' : 'g';
+    const nameCls = dotCls === 'r' ? 'color:#ff8888' : 'color:#d0e4ff';
+    return `<div class="q-pill"><span class="q-dot ${dotCls}"></span><span style="${nameCls}">${esc(q.label)}</span></div>`;
+  }).join('');
+  document.getElementById('queue-pills').innerHTML = pillsHtml;
+  const os = document.getElementById('overall-status');
+  os.className = `health-status ${worst === 'crit' ? 'crit' : 'ok'}`;
+  os.textContent = worst === 'crit' ? 'CRITICAL' : worst === 'warn' ? 'WARNING' : 'HEALTHY';
 
   CONFIG.QUEUES.forEach((q, i) => {
-    const o   = obs[q.id] || { waiting: 0, interacting: 0, longestWaitSec: 0 };
+    const o   = obs[q.id] || { waiting:0, interacting:0, longestWaitSec:0 };
     const ag  = agents[q.id] ?? null;
     const agDisplay = ag === null ? '—' : String(ag);
     const h   = health(o.waiting, ag);
+    const cc  = cardClass(o.waiting, ag);
     const lw  = fmtTime(o.longestWaitSec);
-    const lwRed = o.longestWaitSec >= CONFIG.LONGEST_WAIT_RED;
-    const lwColor = 'c-slate';
-    const agColor = (ag === null || agDisplay === '0') ? 'c-agent-zero' : 'c-blue';
-    const wColor  = waitingColor(o.waiting);
+    const wColor = waitNumColor(o.waiting);
+    const aColor = agentNumColor(ag);
+    const isCrit = cc === 'no-agents' || cc === 'crit';
 
     const cardId = `card-${q.id}`;
     let card = document.getElementById(cardId);
 
     if (!card) {
-      // First time — create the full card
       card = document.createElement('div');
-      card.id = cardId;
-      card.className = `card new ${h.cls}`;
+      card.id        = cardId;
+      card.className = `card new ${cc}`;
       card.style.animationDelay = `${i * 0.08}s`;
       card.innerHTML = `
         <div class="card-head">
-          <div class="card-name" title="${esc(q.label)}">${esc(q.label)}</div>
+          <div class="card-name">${esc(q.label)}</div>
           <div class="badge ${h.cls}" id="badge-${q.id}">${h.label}</div>
         </div>
-        <div class="card-div"></div>
         <div class="stats">
-          <div class="stat" id="stat-waiting-${q.id}">
+          <div class="stat">
             <div class="stat-label">Waiting</div>
-            <div class="stat-val" style="color:${wColor}">${o.waiting}</div>
-            <div class="stat-unit">interactions</div>
+            <div class="stat-val" id="sv-wait-${q.id}" style="color:${wColor}">${o.waiting}</div>
+            <div class="stat-unit" id="su-wait-${q.id}">interaction${o.waiting !== 1 ? 's' : ''}</div>
           </div>
-          <div class="stat" id="stat-agents-${q.id}">
+          <div class="stat">
             <div class="stat-label">Agents on Queue</div>
-            <div class="stat-val ${agColor}">${agDisplay}</div>
+            <div class="stat-val ${aColor ? '' : 'c-agent-zero'}" id="sv-ag-${q.id}" ${aColor ? `style="color:${aColor}"` : ''}>${agDisplay}</div>
             <div class="stat-unit">staffed</div>
           </div>
-          <div class="stat" id="stat-longest-${q.id}">
+          <div class="stat">
             <div class="stat-label">Longest Waiting</div>
-            <div class="stat-val ${lwColor}">${lw.v}</div>
-            <div class="stat-unit">${lw.u}</div>
+            <div class="stat-val" id="sv-lw-${q.id}" style="color:#d9deff">${lw.v}</div>
+            <div class="stat-unit" id="su-lw-${q.id}">${lw.u}</div>
           </div>
         </div>
-        <div class="card-foot">
-          <div class="foot-left"><span class="foot-dot"></span><span id="foot-active-${q.id}">${o.interacting} active interaction${o.interacting !== 1 ? 's' : ''}</span></div>
-          <span>Updates every ${CONFIG.REFRESH_MS/1000}s</span>
+        <div class="wave-row">
+          <div class="wave-cell"><canvas id="wc-${q.id}-0"></canvas></div>
+          <div class="wave-cell"><canvas id="wc-${q.id}-1"></canvas></div>
+          <div class="wave-cell"><canvas id="wc-${q.id}-2"></canvas></div>
         </div>
-      `;
+        <div class="card-foot">
+          <div class="foot-left">
+            <span class="act-dot ${o.interacting > 0 ? 'live' : 'dead'}"></span>
+            <span id="foot-${q.id}">${o.interacting} active interaction${o.interacting !== 1 ? 's' : ''}</span>
+          </div>
+          <span>Updates every ${CONFIG.REFRESH_MS/1000}s</span>
+        </div>`;
       grid.appendChild(card);
-    } else {
-      // Subsequent renders — update in place, no flicker
-      card.className = `card ${h.cls}`;
 
-      // Update badge
+      // Register waves for this card
+      const entry = initWaves(q.id, o.waiting, ag ?? 0, i * 1.1);
+      waveRegistry[q.id] = entry;
+      allWaves.push(...entry);
+    } else {
+      // Update in place
+      card.className = `card ${cc}`;
       const badge = document.getElementById(`badge-${q.id}`);
       if (badge) { badge.className = `badge ${h.cls}`; badge.textContent = h.label; }
 
-      // Update stats smoothly
-      const wEl = document.getElementById(`stat-waiting-${q.id}`)?.querySelector('.stat-val');
-      if (wEl && wEl.textContent !== String(o.waiting)) {
-        wEl.style.color = wColor;
-        wEl.textContent = o.waiting;
-        wEl.classList.remove('flash'); void wEl.offsetWidth; wEl.classList.add('flash');
-      } else if (wEl) { wEl.style.color = wColor; }
-      updateStat(document.getElementById(`stat-agents-${q.id}`),   agDisplay,   'staffed',      agColor);
-      updateStat(document.getElementById(`stat-longest-${q.id}`),  lw.v,        lw.u,           lwColor);
+      function flashVal(el, val, color, cls) {
+        if (!el) return;
+        if (cls) { el.className = `stat-val ${cls}`; el.removeAttribute('style'); }
+        else     { el.className = 'stat-val'; el.style.color = color; }
+        if (el.textContent !== String(val)) {
+          el.textContent = val;
+          el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+        }
+      }
+      flashVal(document.getElementById(`sv-wait-${q.id}`), o.waiting, wColor, null);
+      flashVal(document.getElementById(`sv-ag-${q.id}`),   agDisplay, aColor, aColor ? null : 'c-agent-zero');
+      const lwEl = document.getElementById(`sv-lw-${q.id}`);
+      if (lwEl && lwEl.textContent !== lw.v) {
+        lwEl.textContent = lw.v;
+        lwEl.classList.remove('flash'); void lwEl.offsetWidth; lwEl.classList.add('flash');
+      }
+      const suLw = document.getElementById(`su-lw-${q.id}`);
+      if (suLw) suLw.textContent = lw.u;
+      const suWait = document.getElementById(`su-wait-${q.id}`);
+      if (suWait) suWait.textContent = `interaction${o.waiting !== 1 ? 's' : ''}`;
+      const foot = document.getElementById(`foot-${q.id}`);
+      if (foot) foot.textContent = `${o.interacting} active interaction${o.interacting !== 1 ? 's' : ''}`;
+      const actDot = card.querySelector('.act-dot');
+      if (actDot) actDot.className = `act-dot ${o.interacting > 0 ? 'live' : 'dead'}`;
 
-      // Update footer
-      const footActive = document.getElementById(`foot-active-${q.id}`);
-      if (footActive) footActive.textContent = `${o.interacting} active interaction${o.interacting !== 1 ? 's' : ''}`;
+      // Update wave colors live
+      updateWaveColors(waveRegistry[q.id], o.waiting, ag ?? 0);
     }
   });
 
-  // Remove any cards for queues no longer in config
-  [...grid.children].forEach(child => {
-    if (child.id && child.id.startsWith('card-') && !CONFIG.QUEUES.find(q => `card-${q.id}` === child.id)) {
-      child.remove();
-    }
-  });
-
-  // Clear the loading placeholder on first render
-  if (firstRender) {
-    const placeholder = grid.querySelector('[style*="grid-column"]');
-    if (placeholder) placeholder.remove();
-    firstRender = false;
+  // Timestamps row
+  const tsRow = document.getElementById('ts-row');
+  if (tsRow && firstRender) {
+    tsRow.innerHTML = CONFIG.QUEUES.map((q,i) => {
+      const o  = obs[q.id] || { waiting:0 };
+      const ag = agents[q.id] ?? null;
+      const cc = cardClass(o.waiting, ag);
+      const isCrit = cc === 'no-agents' || cc === 'crit';
+      return `<div class="ts-item ${isCrit?'crit':''}"><span class="ts-text">Last updated 0 seconds ago</span></div>`;
+    }).join('');
   }
+
+  firstRender = false;
 }
 
-/* UI HELPERS */
+// ── UI HELPERS ──
 function setBadge(state, text) {
-  const b = document.getElementById('live-badge');
+  const b   = document.getElementById('live-badge');
+  const dot = document.getElementById('live-dot');
   b.className = `live-pill ${state}`;
-  b.querySelector('.dot').className = `dot ${state === 'live' ? 'pulse' : ''}`;
+  dot.className = `live-dot ${state === 'live' ? 'pulse' : ''}`;
   document.getElementById('badge-text').textContent = text;
 }
 function showAuth() { document.getElementById('auth-overlay').style.display = 'flex'; }
-function toast(msg, err = false) {
+function toast(msg, err=false) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'show' + (err ? ' err' : '');
-  clearTimeout(t._timer); t._timer = setTimeout(() => t.className = '', 4000);
+  t.textContent = msg; t.className = 'show' + (err?' err':'');
+  clearTimeout(t._t); t._t = setTimeout(() => t.className='', 4000);
 }
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* BOOT */
+// ── BOOT ──
 (function boot() {
   const t = parseToken();
   if (t) {
     token = t;
-    history.replaceState(null, '', window.location.pathname);
+    history.replaceState(null,'',window.location.pathname);
     poll();
     timer = setInterval(poll, CONFIG.REFRESH_MS);
     return;
