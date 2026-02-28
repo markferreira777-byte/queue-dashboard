@@ -397,17 +397,17 @@ function fmtTime(sec) {
   return                 { v: (sec/3600).toFixed(1),      u: 'hr'  };
 }
 
-/* WAITING GRADIENT: white(0) → blue(1) → red(10) */
+/* WAITING GRADIENT: white(0) → bright blue(1) → red(10) */
 function waitingColor(n) {
   if (n <= 0) return '#f0f6ff';  // white when zero
   const t = Math.min(n, CONFIG.CRIT_WAITING) / CONFIG.CRIT_WAITING;
-  // blue #60a5fa → orange #fb923c → red #f87171
+  // bright blue #38bdf8 → orange #fb923c → red #f87171
   let r, g, b;
   if (t < 0.5) {
     const p = t / 0.5;
-    r = Math.round(96  + (251-96)*p);
-    g = Math.round(165 + (146-165)*p);
-    b = Math.round(250 + (60-250)*p);
+    r = Math.round(56  + (251-56)*p);
+    g = Math.round(189 + (146-189)*p);
+    b = Math.round(248 + (60-248)*p);
   } else {
     const p = (t - 0.5) / 0.5;
     r = Math.round(251 + (248-251)*p);
