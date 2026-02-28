@@ -105,10 +105,10 @@
     .card:hover { border-color: var(--border2); box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(96,165,250,0.04); transform: translateY(-2px); }
     .card:hover::before { opacity: 1; }
 
-    .card.crit { border-color: rgba(248,113,113,0.35); box-shadow: 0 0 30px rgba(248,113,113,0.06); }
-    .card.crit::before { background: linear-gradient(90deg, transparent, rgba(248,113,113,0.5), transparent); opacity: 1; }
-    .card.warn { border-color: rgba(251,146,60,0.3); }
-    .card.no-agents { border-color: rgba(248,113,113,0.25); }
+    .card.crit { border-color: #90adc6; box-shadow: none; }
+    .card.crit::before { opacity: 0; }
+    .card.warn { border-color: #90adc6; }
+    .card.no-agents { border-color: #90adc6; }
 
     /* ── CARD HEADER ── */
     .card-head {
@@ -248,7 +248,7 @@ const CONFIG = {
     { id: '4879c768-5ed5-4949-aff1-ccbb0e3dad99', label: 'POD1 Chat Queue' },
     { id: '0187e19e-f563-441e-ad62-2965f43de61f', label: 'POD1 Email Queue' },
     { id: '8aa2fa79-0bdb-4b2e-86f2-adce402a620c', label: 'POD1 Voice Queue' },
-    { id: '17d0d069-2abe-4610-b21e-5b05e03996c2', label: 'Main Voice' },
+    { id: '17d0d069-2abe-4610-b21e-5b05e03996c2', label: 'Care Team Voice' },
   ],
   REFRESH_MS:       60000,
   WARN_WAITING:     5,
