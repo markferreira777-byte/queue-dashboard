@@ -171,14 +171,14 @@
     .c-blue      { color: var(--blue); }
     .c-red       { color: var(--red); }
     .c-green     { color: var(--green); }
-    .c-slate     { color: #b8cce0; }
+    .c-slate     { color: #d9deff; }
 
     /* zero-agents pulse */
     @keyframes agentpulse {
-      0%,100% { opacity:1; text-shadow: 0 0 0px rgba(248,113,113,0); }
-      50%      { opacity:0.55; text-shadow: 0 0 22px rgba(248,113,113,0.9); }
+      0%,100% { opacity:1; text-shadow: 0 0 0px rgba(230,57,70,0); }
+      50%      { opacity:0.55; text-shadow: 0 0 22px rgba(230,57,70,0.9); }
     }
-    .c-agent-zero { color: var(--red); animation: agentpulse 1.6s ease-in-out infinite; }
+    .c-agent-zero { color: #e63946; animation: agentpulse 1.6s ease-in-out infinite; }
 
     /* ── CARD FOOTER ── */
     .card-foot {
@@ -400,7 +400,7 @@ function fmtTime(sec) {
 /* WAITING COLOR: white at 0, bright blue >0 */
 function waitingColor(n) {
   if (n <= 0) return '#f0f6ff';  // white when zero
-  return '#38bdf8';              // bright blue for any waiting
+  return '#5febfe';              // bright cyan-blue for any waiting
 }
 
 /* HEALTH */
