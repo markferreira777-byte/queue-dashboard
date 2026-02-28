@@ -118,8 +118,8 @@
       -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
     }
     .card.healthy::before  { background: linear-gradient(135deg, rgba(0,230,118,0.5), rgba(26,111,255,0.15), rgba(0,230,118,0.5)); }
-    .card.no-agents::before { background: linear-gradient(135deg, rgba(255,58,58,0.7), rgba(255,120,50,0.15), rgba(255,58,58,0.7)); animation: critglow 2s ease-in-out infinite; }
-    .card.crit::before      { background: linear-gradient(135deg, rgba(255,58,58,0.7), rgba(255,120,50,0.15), rgba(255,58,58,0.7)); animation: critglow 2s ease-in-out infinite; }
+    .card.no-agents::before { background: linear-gradient(135deg, rgba(255,58,58,0.7), rgba(255,120,50,0.15), rgba(255,58,58,0.7)); animation: critglow 3.5s ease-in-out infinite; }
+    .card.crit::before      { background: linear-gradient(135deg, rgba(255,58,58,0.7), rgba(255,120,50,0.15), rgba(255,58,58,0.7)); animation: critglow 3.5s ease-in-out infinite; }
     .card.warn::before      { background: linear-gradient(135deg, rgba(255,171,0,0.55), rgba(255,100,0,0.15), rgba(255,171,0,0.55)); }
     .card.ok::before        { background: linear-gradient(135deg, rgba(26,111,255,0.5), rgba(26,111,255,0.1), rgba(26,111,255,0.5)); }
     @keyframes critglow { 0%,100%{opacity:1} 50%{opacity:0.4} }
@@ -140,7 +140,7 @@
     .badge.ok        { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.07); }
     .badge.warn      { color: var(--amber); border-color: rgba(255,171,0,0.45);  background: rgba(255,171,0,0.07); }
     .badge.crit      { color: #ff5555;      border-color: rgba(255,85,85,0.5);   background: rgba(255,85,85,0.08); }
-    .badge.no-agents { color: #ff4444;      border-color: rgba(255,68,68,0.6);   background: rgba(255,68,68,0.1); animation: critglow 1.2s ease-in-out infinite; }
+    .badge.no-agents { color: #ff4444;      border-color: rgba(255,68,68,0.6);   background: rgba(255,68,68,0.1); animation: critglow 3.5s ease-in-out infinite; }
     .badge.healthy   { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.07); }
 
     /* ── STATS ── */
@@ -152,7 +152,7 @@
     @keyframes numflash { 0%{opacity:0.3;transform:scale(0.94)} 100%{opacity:1;transform:scale(1)} }
     .stat-val.flash { animation: numflash 0.35s cubic-bezier(0.16,1,0.3,1); }
     @keyframes agentpulse { 0%,100%{opacity:1;text-shadow:0 0 0px rgba(255,68,68,0)} 50%{opacity:0.5;text-shadow:0 0 22px rgba(255,68,68,0.9)} }
-    .c-agent-zero { color: #ff4444; animation: agentpulse 1.6s ease-in-out infinite; }
+    .c-agent-zero { color: #ff4444; animation: agentpulse 3.5s ease-in-out infinite; }
 
     /* ── WAVE ROW ── */
     .wave-row  { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0 0 0.7rem; }
