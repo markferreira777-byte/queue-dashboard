@@ -171,14 +171,14 @@
     .c-blue      { color: var(--blue); }
     .c-red       { color: var(--red); }
     .c-green     { color: var(--green); }
-    .c-slate     { color: #94a3b8; }
+    .c-slate     { color: #b8cce0; }
 
     /* zero-agents pulse */
     @keyframes agentpulse {
-      0%,100% { opacity:1; text-shadow: 0 0 0px rgba(251,146,60,0); }
-      50%      { opacity:0.55; text-shadow: 0 0 20px rgba(251,146,60,0.8); }
+      0%,100% { opacity:1; text-shadow: 0 0 0px rgba(248,113,113,0); }
+      50%      { opacity:0.55; text-shadow: 0 0 22px rgba(248,113,113,0.9); }
     }
-    .c-agent-zero { color: var(--orange); animation: agentpulse 1.6s ease-in-out infinite; }
+    .c-agent-zero { color: var(--red); animation: agentpulse 1.6s ease-in-out infinite; }
 
     /* ── CARD FOOTER ── */
     .card-foot {
@@ -397,17 +397,17 @@ function fmtTime(sec) {
   return                 { v: (sec/3600).toFixed(1),      u: 'hr'  };
 }
 
-/* WAITING GRADIENT: white(1) → orange(5) → red(10) */
+/* WAITING GRADIENT: white(0) → blue(1) → red(10) */
 function waitingColor(n) {
-  if (n <= 0) return '#3a5a7a';  // dim slate when zero
+  if (n <= 0) return '#f0f6ff';  // white when zero
   const t = Math.min(n, CONFIG.CRIT_WAITING) / CONFIG.CRIT_WAITING;
-  // white #f0f6ff → orange #fb923c → red #f87171
+  // blue #60a5fa → orange #fb923c → red #f87171
   let r, g, b;
   if (t < 0.5) {
     const p = t / 0.5;
-    r = Math.round(240 + (251-240)*p);
-    g = Math.round(246 + (146-246)*p);
-    b = Math.round(255 + (60-255)*p);
+    r = Math.round(96  + (251-96)*p);
+    g = Math.round(165 + (146-165)*p);
+    b = Math.round(250 + (60-250)*p);
   } else {
     const p = (t - 0.5) / 0.5;
     r = Math.round(251 + (248-251)*p);
@@ -456,7 +456,7 @@ function render(obs, agents) {
     const h   = health(o.waiting, ag);
     const lw  = fmtTime(o.longestWaitSec);
     const lwRed = o.longestWaitSec >= CONFIG.LONGEST_WAIT_RED;
-    const lwColor = lwRed ? 'c-red' : 'c-slate';
+    const lwColor = 'c-slate';
     const agColor = (ag === null || agDisplay === '0') ? 'c-agent-zero' : 'c-blue';
     const wColor  = waitingColor(o.waiting);
 
