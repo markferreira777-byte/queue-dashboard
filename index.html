@@ -397,24 +397,10 @@ function fmtTime(sec) {
   return                 { v: (sec/3600).toFixed(1),      u: 'hr'  };
 }
 
-/* WAITING GRADIENT: white(0) → bright blue(1) → red(10) */
+/* WAITING COLOR: white at 0, bright blue >0 */
 function waitingColor(n) {
   if (n <= 0) return '#f0f6ff';  // white when zero
-  const t = Math.min(n, CONFIG.CRIT_WAITING) / CONFIG.CRIT_WAITING;
-  // bright blue #38bdf8 → orange #fb923c → red #f87171
-  let r, g, b;
-  if (t < 0.5) {
-    const p = t / 0.5;
-    r = Math.round(56  + (251-56)*p);
-    g = Math.round(189 + (146-189)*p);
-    b = Math.round(248 + (60-248)*p);
-  } else {
-    const p = (t - 0.5) / 0.5;
-    r = Math.round(251 + (248-251)*p);
-    g = Math.round(146 + (113-146)*p);
-    b = Math.round(60  + (113-60)*p);
-  }
-  return `rgb(${r},${g},${b})`;
+  return '#38bdf8';              // bright blue for any waiting
 }
 
 /* HEALTH */
