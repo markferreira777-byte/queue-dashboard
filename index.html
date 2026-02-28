@@ -148,11 +148,11 @@
     .badge.healthy   { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.07); }
 
     /* ── STATS ── */
-    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; }
-    .stat  { padding: 1.15rem 0.6rem 0.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .stat-label { font-family: var(--font-h); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #a8ccec; margin-bottom: 0.35rem; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; }
+    .stat  { padding: 1.15rem 0.6rem 0.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: flex-end; }
+    .stat-label { font-family: var(--font-h); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7aafd4; margin-bottom: 0.35rem; height:2.4em; display:block; text-align:center; line-height:1.2; }
     .stat-val   { font-family: var(--font-h); font-size: 2.8rem; font-weight: 700; line-height: 1; letter-spacing: -0.01em; transition: color 0.5s; }
-    .stat-unit  { font-size: 0.6rem; color: #a8ccec; margin-top: 0.2rem; letter-spacing: 0.06em; }
+    .stat-unit  { font-size: 0.6rem; color: #7aafd4; margin-top: 0.2rem; letter-spacing: 0.06em; }
     @keyframes numflash { 0%{opacity:0.3;transform:scale(0.94)} 100%{opacity:1;transform:scale(1)} }
     .stat-val.flash { animation: numflash 0.35s cubic-bezier(0.16,1,0.3,1); }
     @keyframes agentpulse { 0%,100%{opacity:1;text-shadow:0 0 0px rgba(255,68,68,0)} 50%{opacity:0.5;text-shadow:0 0 22px rgba(255,68,68,0.9)} }
@@ -165,8 +165,8 @@
 
     /* ── CARD FOOT ── */
     .card-foot {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.6rem 1.25rem; font-size: 0.65rem; color: #7aafd4;
+      display: flex; align-items: center;
+      padding: 0.6rem 1.25rem; font-size: 0.55rem; color: var(--muted);
     }
     .foot-left { display: flex; align-items: center; gap: 0.45rem; }
     .act-dot   { width: 5px; height: 5px; border-radius: 50%; }
@@ -235,7 +235,7 @@ const CONFIG = {
     { id: '8aa2fa79-0bdb-4b2e-86f2-adce402a620c', label: 'Voice Queue'      },
     { id: '17d0d069-2abe-4610-b21e-5b05e03996c2', label: 'Care Team Voice'  },
   ],
-  REFRESH_MS:       60000,
+  REFRESH_MS:       30000,
   WARN_WAITING:     5,
   CRIT_WAITING:     10,
   LONGEST_WAIT_RED: 300,
@@ -274,7 +274,7 @@ const LOGO_SRC = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BS
       <div style="font-size:0.9rem">Connecting…</div>
     </div>
   </div>
-  <div class="ts-row" id="ts-row"></div>
+<div id="ts-row" style="display:none"></div>
 </div>
 
 <div id="auth-overlay" style="display:none">
@@ -634,17 +634,17 @@ function render(obs, agents) {
         </div>
         <div class="stats">
           <div class="stat">
-            <div class="stat-label">Waiting</div>
+            <div class="stat-label">Waiting<br><span style="color:var(--bg)">Queue</span></div>
             <div class="stat-val" id="sv-wait-${q.id}" style="color:${wColor}">${o.waiting}</div>
             <div class="stat-unit" id="su-wait-${q.id}">interaction${o.waiting !== 1 ? 's' : ''}</div>
           </div>
           <div class="stat">
-            <div class="stat-label">Agents on Queue</div>
+            <div class="stat-label">Agents on<br>Queue</div>
             <div class="stat-val ${aColor ? '' : 'c-agent-zero'}" id="sv-ag-${q.id}" ${aColor ? `style="color:${aColor}"` : ''}>${agDisplay}</div>
             <div class="stat-unit">staffed</div>
           </div>
           <div class="stat">
-            <div class="stat-label">Longest Waiting</div>
+            <div class="stat-label">Longest<br>Waiting</div>
             <div class="stat-val" id="sv-lw-${q.id}" style="color:#d9deff">${lw.v}</div>
             <div class="stat-unit" id="su-lw-${q.id}">${lw.u}</div>
           </div>
@@ -656,10 +656,9 @@ function render(obs, agents) {
         </div>
         <div class="card-foot">
           <div class="foot-left">
-            <span class="act-dot ${o.interacting > 0 ? 'live' : 'dead'}"></span>
-            <span id="foot-${q.id}">${o.interacting} active interaction${o.interacting !== 1 ? 's' : ''}</span>
+            <span class="act-dot live"></span>
+            <span class="ts-text" id="foot-${q.id}">Last updated 0 seconds ago</span>
           </div>
-          <span>Updates every ${CONFIG.REFRESH_MS/1000}s</span>
         </div>`;
       grid.appendChild(card);
 
@@ -693,27 +692,14 @@ function render(obs, agents) {
       if (suLw) suLw.textContent = lw.u;
       const suWait = document.getElementById(`su-wait-${q.id}`);
       if (suWait) suWait.textContent = `interaction${o.waiting !== 1 ? 's' : ''}`;
-      const foot = document.getElementById(`foot-${q.id}`);
-      if (foot) foot.textContent = `${o.interacting} active interaction${o.interacting !== 1 ? 's' : ''}`;
-      const actDot = card.querySelector('.act-dot');
-      if (actDot) actDot.className = `act-dot ${o.interacting > 0 ? 'live' : 'dead'}`;
+      // foot timestamp updated by startCountdown
 
       // Update wave colors live
       updateWaveColors(waveRegistry[q.id], o.waiting, ag ?? 0);
     }
   });
 
-  // Timestamps row
-  const tsRow = document.getElementById('ts-row');
-  if (tsRow && firstRender) {
-    tsRow.innerHTML = CONFIG.QUEUES.map((q,i) => {
-      const o  = obs[q.id] || { waiting:0 };
-      const ag = agents[q.id] ?? null;
-      const cc = cardClass(o.waiting, ag);
-      const isCrit = cc === 'no-agents' || cc === 'crit';
-      return `<div class="ts-item ${isCrit?'crit':''}"><span class="ts-text">Last updated 0 seconds ago</span></div>`;
-    }).join('');
-  }
+  // timestamps live in each card footer, updated by startCountdown
 
   firstRender = false;
 }
