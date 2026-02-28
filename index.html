@@ -151,16 +151,16 @@
     .stat:last-child { border-right: none; }
 
     .stat-label {
-      font-size: 0.58rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--muted2);
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #8aaccc;
     }
     .stat-val {
       font-family: var(--font-h); font-size: 2.9rem; font-weight: 700;
       line-height: 1; letter-spacing: -0.03em;
-      transition: color 0.5s, opacity 0.3s;
+      transition: color 0.6s, opacity 0.3s;
     }
     .stat-unit {
-      font-size: 0.6rem; color: var(--muted2); font-weight: 500; letter-spacing: 0.06em;
+      font-size: 0.62rem; color: #6b8fad; font-weight: 500; letter-spacing: 0.06em;
     }
 
     /* number flash on update */
@@ -168,12 +168,17 @@
     .stat-val.flash { animation: numflash 0.35s cubic-bezier(0.16,1,0.3,1); }
 
     /* color classes */
-    .c-cyan   { color: var(--cyan); }
-    .c-blue   { color: var(--blue); }
-    .c-red    { color: var(--red); }
-    .c-orange { color: var(--orange); }
-    .c-green  { color: var(--green); }
-    .c-muted  { color: var(--muted2); }
+    .c-blue      { color: var(--blue); }
+    .c-red       { color: var(--red); }
+    .c-green     { color: var(--green); }
+    .c-slate     { color: #94a3b8; }
+
+    /* zero-agents pulse */
+    @keyframes agentpulse {
+      0%,100% { opacity:1; text-shadow: 0 0 0px rgba(251,146,60,0); }
+      50%      { opacity:0.55; text-shadow: 0 0 20px rgba(251,146,60,0.8); }
+    }
+    .c-agent-zero { color: var(--orange); animation: agentpulse 1.6s ease-in-out infinite; }
 
     /* ── CARD FOOTER ── */
     .card-foot {
@@ -392,6 +397,26 @@ function fmtTime(sec) {
   return                 { v: (sec/3600).toFixed(1),      u: 'hr'  };
 }
 
+/* WAITING GRADIENT: white(1) → orange(5) → red(10) */
+function waitingColor(n) {
+  if (n <= 0) return '#3a5a7a';  // dim slate when zero
+  const t = Math.min(n, CONFIG.CRIT_WAITING) / CONFIG.CRIT_WAITING;
+  // white #f0f6ff → orange #fb923c → red #f87171
+  let r, g, b;
+  if (t < 0.5) {
+    const p = t / 0.5;
+    r = Math.round(240 + (251-240)*p);
+    g = Math.round(246 + (146-246)*p);
+    b = Math.round(255 + (60-255)*p);
+  } else {
+    const p = (t - 0.5) / 0.5;
+    r = Math.round(251 + (248-251)*p);
+    g = Math.round(146 + (113-146)*p);
+    b = Math.round(60  + (113-60)*p);
+  }
+  return `rgb(${r},${g},${b})`;
+}
+
 /* HEALTH */
 function health(waiting, agents) {
   if (agents === 0 || agents === null) return { label: 'No Agents On-Queue', cls: 'no-agents' };
@@ -431,7 +456,9 @@ function render(obs, agents) {
     const h   = health(o.waiting, ag);
     const lw  = fmtTime(o.longestWaitSec);
     const lwRed = o.longestWaitSec >= CONFIG.LONGEST_WAIT_RED;
-    const lwColor = lwRed ? 'c-red' : o.longestWaitSec > 0 ? 'c-orange' : 'c-muted';
+    const lwColor = lwRed ? 'c-red' : 'c-slate';
+    const agColor = (ag === null || agDisplay === '0') ? 'c-agent-zero' : 'c-blue';
+    const wColor  = waitingColor(o.waiting);
 
     const cardId = `card-${q.id}`;
     let card = document.getElementById(cardId);
@@ -451,12 +478,12 @@ function render(obs, agents) {
         <div class="stats">
           <div class="stat" id="stat-waiting-${q.id}">
             <div class="stat-label">Waiting</div>
-            <div class="stat-val c-cyan">${o.waiting}</div>
+            <div class="stat-val" style="color:${wColor}">${o.waiting}</div>
             <div class="stat-unit">interactions</div>
           </div>
           <div class="stat" id="stat-agents-${q.id}">
             <div class="stat-label">Agents on Queue</div>
-            <div class="stat-val c-blue">${agDisplay}</div>
+            <div class="stat-val ${agColor}">${agDisplay}</div>
             <div class="stat-unit">staffed</div>
           </div>
           <div class="stat" id="stat-longest-${q.id}">
@@ -480,8 +507,13 @@ function render(obs, agents) {
       if (badge) { badge.className = `badge ${h.cls}`; badge.textContent = h.label; }
 
       // Update stats smoothly
-      updateStat(document.getElementById(`stat-waiting-${q.id}`),  o.waiting,   'interactions', 'c-cyan');
-      updateStat(document.getElementById(`stat-agents-${q.id}`),   agDisplay,   'staffed',      'c-blue');
+      const wEl = document.getElementById(`stat-waiting-${q.id}`)?.querySelector('.stat-val');
+      if (wEl && wEl.textContent !== String(o.waiting)) {
+        wEl.style.color = wColor;
+        wEl.textContent = o.waiting;
+        wEl.classList.remove('flash'); void wEl.offsetWidth; wEl.classList.add('flash');
+      } else if (wEl) { wEl.style.color = wColor; }
+      updateStat(document.getElementById(`stat-agents-${q.id}`),   agDisplay,   'staffed',      agColor);
       updateStat(document.getElementById(`stat-longest-${q.id}`),  lw.v,        lw.u,           lwColor);
 
       // Update footer
