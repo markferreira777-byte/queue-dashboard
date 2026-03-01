@@ -159,14 +159,15 @@
     .c-agent-zero { color: #ff4444; animation: agentpulse 3.5s ease-in-out infinite; }
 
     /* ── WAVE ROW ── */
-    .wave-row  { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0 0 0.7rem; }
-    .wave-cell { display: flex; align-items: center; justify-content: center; height: 22px; position: relative; overflow: hidden; }
-    .wave-cell canvas { display: block; position: absolute; left: 0; top: 0; }
+    .wave-row  { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0 0 0.2rem; }
+    .wave-cell { display: flex; align-items: center; justify-content: center; height: 22px; position: relative; overflow: hidden; background: transparent; }
+    .wave-cell canvas { display: block; position: absolute; left: 0; top: 0; border: 0; outline: none; opacity: 0; transition: opacity 0.3s; }
 
     /* ── CARD FOOT ── */
     .card-foot {
       display: flex; align-items: center;
-      padding: 0.6rem 1.25rem; font-size: 0.55rem; color: var(--muted);
+      padding: 0.5rem 1.25rem 0.6rem; font-size: 0.55rem; color: var(--muted);
+      border: none;
     }
     .foot-left { display: flex; align-items: center; gap: 0.45rem; }
     .act-dot   { width: 5px; height: 5px; border-radius: 50%; }
@@ -517,6 +518,7 @@ function drawWave(w) {
     canvas.height = Math.round(CH*dpr);
     canvas.style.width  = CW + 'px';
     canvas.style.height = CH + 'px';
+    canvas.style.opacity = '1';
   }
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -634,7 +636,7 @@ function render(obs, agents) {
         </div>
         <div class="stats">
           <div class="stat">
-            <div class="stat-label">Waiting<br><span style="color:var(--bg)">Queue</span></div>
+            <div class="stat-label">Waiting<br><span style="color:transparent">Queue</span></div>
             <div class="stat-val" id="sv-wait-${q.id}" style="color:${wColor}">${o.waiting}</div>
             <div class="stat-unit" id="su-wait-${q.id}">interaction${o.waiting !== 1 ? 's' : ''}</div>
           </div>
@@ -650,9 +652,9 @@ function render(obs, agents) {
           </div>
         </div>
         <div class="wave-row">
-          <div class="wave-cell"><canvas id="wc-${q.id}-0"></canvas></div>
-          <div class="wave-cell"><canvas id="wc-${q.id}-1"></canvas></div>
-          <div class="wave-cell"><canvas id="wc-${q.id}-2"></canvas></div>
+          <div class="wave-cell"><canvas id="wc-${q.id}-0" width="1" height="1"></canvas></div>
+          <div class="wave-cell"><canvas id="wc-${q.id}-1" width="1" height="1"></canvas></div>
+          <div class="wave-cell"><canvas id="wc-${q.id}-2" width="1" height="1"></canvas></div>
         </div>
         <div class="card-foot">
           <div class="foot-left">
