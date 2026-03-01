@@ -160,7 +160,7 @@
 
     /* ── WAVE ROW ── */
     .wave-row  { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 0; border: none; }
-    .wave-cell { display: flex; align-items: center; justify-content: center; height: 22px; position: relative; overflow: hidden; background: transparent; }
+    .wave-cell { display: flex; align-items: center; justify-content: center; height: 36px; position: relative; overflow: hidden; background: transparent; }
     .wave-cell canvas { display: block; position: absolute; left: 0; top: 0; border: 0; outline: none; opacity: 0; transition: opacity 0.3s; }
 
     /* ── CARD FOOT ── */
@@ -559,11 +559,11 @@ function drawWave(w) {
   w.dotFrac = (w.dotFrac + w.speed*0.003) % 1;
   const dot = pts[Math.min(Math.round(w.dotFrac*N), pts.length-1)];
   const dotR = 2.6;
-  const grd = ctx.createRadialGradient(dot.x,dot.y,0,dot.x,dot.y,dotR*5);
+  const grd = ctx.createRadialGradient(dot.x,dot.y,0,dot.x,dot.y,dotR*3.5);
   grd.addColorStop(0,   w.color.glow);
   grd.addColorStop(0.4, w.color.glow.replace(/[\d.]+\)$/, '0.25)'));
   grd.addColorStop(1,   w.color.glow.replace(/[\d.]+\)$/, '0)'));
-  ctx.beginPath(); ctx.fillStyle = grd; ctx.arc(dot.x,dot.y,dotR*5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.fillStyle = grd; ctx.arc(dot.x,dot.y,dotR*3.5,0,Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.fillStyle = w.color.dot; ctx.arc(dot.x,dot.y,dotR,0,Math.PI*2); ctx.fill();
 }
 
