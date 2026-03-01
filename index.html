@@ -453,16 +453,16 @@ function agentWaveColor(n) {
 }
 function waveProfile(type, val) {
   if (type === 'wait') {
-    if (val === 0) return { amp:3.0, noiseAmt:0,   speed:0.4,  freq:0.9  };
-    if (val <= 2)  return { amp:4.0, noiseAmt:0.8, speed:0.7,  freq:1.2  };
-    return               { amp:4.5, noiseAmt:1.8, speed:1.1,  freq:1.6  };
+    if (val === 0) return { amp:1.4, noiseAmt:0,   speed:0.4,  freq:0.9  };
+    if (val <= 2)  return { amp:2.0, noiseAmt:0.8, speed:0.7,  freq:1.2  };
+    return               { amp:2.2, noiseAmt:1.8, speed:1.1,  freq:1.6  };
   }
   if (type === 'agent') {
-    if (val === 0) return { amp:4.5, noiseAmt:1.8, speed:1.2,  freq:1.7  };
-    if (val <= 2)  return { amp:4.0, noiseAmt:0.6, speed:0.7,  freq:1.2  };
-    return               { amp:3.2, noiseAmt:0,   speed:0.4,  freq:0.9  };
+    if (val === 0) return { amp:2.2, noiseAmt:1.8, speed:1.2,  freq:1.7  };
+    if (val <= 2)  return { amp:2.0, noiseAmt:0.6, speed:0.7,  freq:1.2  };
+    return               { amp:1.5, noiseAmt:0,   speed:0.4,  freq:0.9  };
   }
-  return { amp:3.5, noiseAmt:0,   speed:0.35, freq:0.85 };
+  return { amp:1.6, noiseAmt:0,   speed:0.35, freq:0.85 };
 }
 
 const waveRegistry = {}; // queueId → [{canvas,color,...,t,dotFrac,noiseTable}]
