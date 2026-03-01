@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Care Team POD 1 — Salesforce</title>
+  <title>Care Team POD 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -29,7 +29,7 @@
 
     /* ── STARS ── */
     .stars {
-      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background-image:
         radial-gradient(1px 1px at 8% 18%,  rgba(255,255,255,0.5) 0%, transparent 100%),
         radial-gradient(1px 1px at 23% 62%, rgba(255,255,255,0.3) 0%, transparent 100%),
@@ -220,82 +220,11 @@
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: rgba(58,128,255,0.2); border-radius: 4px; }
-
-    /* ── SALESFORCE CHROME ── */
-    body { margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: #080c14; }
-    .sf-topbar { background: #0b1526; height: 26px; min-height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-bottom: 1px solid #1a3050; font-size: 10px; color: #3a6080; font-family: Arial, sans-serif; }
-    .sf-dots { display: flex; gap: 4px; align-items: center; }
-    .sf-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .sf-nav { background: #0d1a30; height: 34px; min-height: 34px; flex-shrink: 0; display: flex; align-items: center; padding: 0 12px; gap: 8px; border-bottom: 1px solid #1a3050; }
-    .sf-nav-btn { background: transparent; border: none; color: #5a8ab0; font-size: 10px; font-family: Arial, sans-serif; cursor: pointer; padding: 4px 8px; border-radius: 3px; }
-    .sf-nav-btn.active { color: #5eb8ff; background: rgba(0,112,210,0.15); }
-    .sf-pagebar { background: #0d1f35; height: 22px; min-height: 22px; flex-shrink: 0; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid #1a3050; font-size: 9px; color: #3a6080; font-family: Arial, sans-serif; }
-    .sf-page-content { flex: 1; background: #0a1525; position: relative; overflow: hidden; min-height: 0; }
-    .sf-skeleton { background: #0d2040; border-radius: 4px; margin-bottom: 9px; opacity: 0.3; }
-    .sf-popup { position: absolute; inset: 0; overflow-y: auto; }
-    .sf-popup::-webkit-scrollbar { width: 3px; }
-    .sf-popup::-webkit-scrollbar-thumb { background: rgba(58,128,255,0.2); border-radius: 3px; }
-    .sf-utilbar { background: #0b1a2e; height: 36px; min-height: 36px; flex-shrink: 0; display: flex; align-items: center; padding: 0 10px; gap: 3px; border-top: 2px solid #0070d2; }
-    .sf-btn { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 3px; font-size: 10px; font-family: Arial, sans-serif; border: none; cursor: pointer; background: #0d2240; color: #5a8ab0; white-space: nowrap; }
-    .sf-btn.on { background: #0a3a6e; color: #5eb8ff; border-bottom: 2px solid #0070d2; }
-    .sf-sep { width: 1px; height: 20px; background: #1a3050; margin: 0 3px; }
-
-    /* ── COMPACT OVERRIDES FOR 600px ── */
-    .wrapper { padding: 0.85rem 0.9rem 1rem; max-width: 100%; }
-    header { margin-bottom: 0.65rem; }
-    .brand { gap: 0.65rem; }
-    .brand-icon { width: 36px; height: 36px; }
-    .brand-name { font-size: 1.05rem; }
-    .brand-sub  { font-size: 0.52rem; margin-top: 2px; }
-    .header-line { margin: 0 0.6rem; }
-    .clock { font-size: 0.95rem; }
-    .live-pill { font-size: 0.6rem; padding: 0.28rem 0.8rem; }
-    .health-bar { padding: 0.4rem 0.75rem; margin-bottom: 0.65rem; font-size: 0.62rem; gap: 0.5rem; border-radius: 8px; }
-    .q-pill { font-size: 0.6rem; }
-    .grid { gap: 0.6rem; }
-    .card-head { padding: 0.6rem 0.85rem 0.5rem; }
-    .card-name { font-size: 0.68rem; gap: 0.3rem; letter-spacing: 0.05em; white-space: nowrap; overflow: hidden; }
-    .card-name svg { width: 12px !important; height: 12px !important; }
-    .badge { font-size: 0.45rem; padding: 0.1rem 0.4rem; white-space: nowrap; }
-    .stat  { padding: 0.55rem 0.25rem 0.3rem; }
-    .stat-label { font-size: 0.48rem; margin-bottom: 0.25rem; height: 2.2em; }
-    .stat-val   { font-size: 1.9rem; }
-    .stat-unit  { font-size: 0.48rem; margin-top: 0.12rem; }
-    .wave-row { padding: 0 0 0.3rem; }
-    .wave-cell { height: 28px; }
-    .card-foot { padding: 0.3rem 0.85rem; font-size: 0.44rem; }
-    .act-dot { width: 4px; height: 4px; }
-    #auth-overlay h1 { font-size: 1.5rem; }
   </style>
 </head>
 <body>
 
-<!-- ── SALESFORCE CHROME ── -->
-<div class="sf-topbar">
-  <div class="sf-dots">
-    <div class="sf-dot" style="background:#ff5f57"></div>
-    <div class="sf-dot" style="background:#febc2e"></div>
-    <div class="sf-dot" style="background:#28c840"></div>
-  </div>
-  <span>Salesforce Lightning</span>
-  <div style="width:42px"></div>
-</div>
-<div class="sf-nav">
-  <button class="sf-nav-btn">Home</button>
-  <button class="sf-nav-btn active">Cases</button>
-  <button class="sf-nav-btn">Contacts</button>
-  <button class="sf-nav-btn">Reports</button>
-</div>
-<div class="sf-pagebar">
-  Home › Cases › <span style="color:#5a8ab0;margin-left:4px">Queue Dashboard</span>
-</div>
-<div class="sf-page-content">
-  <div style="padding:14px;">
-    <div class="sf-skeleton" style="height:14px;width:50%;margin-bottom:8px"></div>
-    <div class="sf-skeleton" style="height:10px;width:30%;margin-bottom:0"></div>
-  </div>
-  <div class="sf-popup">
-    <div class="stars"></div>
+<div class="stars"></div>
 
 <script>
 const CONFIG = {
@@ -808,14 +737,5 @@ function esc(s) {
   showAuth();
 })();
 </script>
-  </div><!-- sf-popup -->
-</div><!-- sf-page-content -->
-<div class="sf-utilbar">
-  <button class="sf-btn on">📊 Queue Monitor</button>
-  <div class="sf-sep"></div>
-  <button class="sf-btn">📝 Notes</button>
-  <button class="sf-btn">🕐 Recent</button>
-  <button class="sf-btn">📞 Softphone</button>
-</div>
 </body>
 </html>
