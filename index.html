@@ -253,7 +253,6 @@ const LOGO_SRC = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BS
 // ── FAVICON ALERT SYSTEM ──
 let faviconTimer = null;
 let faviconFlipState = false;
-const TITLE_NORMAL = document.title;
 
 function makeFaviconDataUrl(color) {
   const c = document.createElement('canvas');
@@ -281,20 +280,12 @@ function setFavicon(href) {
   link.href = href;
 }
 
-function startAlertFlash(affectedQueues) {
-  if (faviconTimer) return; // already flashing
-  const label = affectedQueues.length === 1
-    ? affectedQueues[0]
-    : affectedQueues.length + ' QUEUES';
+function startAlertFlash() {
+  if (faviconTimer) return;
+  faviconFlipState = false;
   faviconTimer = setInterval(() => {
     faviconFlipState = !faviconFlipState;
-    if (faviconFlipState) {
-      setFavicon(FAVICON_ALERT);
-      document.title = '🔴 NO AGENTS — ' + label;
-    } else {
-      setFavicon(LOGO_SRC);
-      document.title = TITLE_NORMAL;
-    }
+    setFavicon(faviconFlipState ? FAVICON_ALERT : LOGO_SRC);
   }, 900);
 }
 
@@ -304,7 +295,6 @@ function stopAlertFlash() {
   faviconTimer = null;
   faviconFlipState = false;
   setFavicon(LOGO_SRC);
-  document.title = TITLE_NORMAL;
 }
 
 function checkAlertCondition(obs, agents) {
@@ -317,7 +307,7 @@ function checkAlertCondition(obs, agents) {
     .map(q => q.label.toUpperCase());
 
   if (alertQueues.length > 0) {
-    startAlertFlash(alertQueues);
+    startAlertFlash();
   } else {
     stopAlertFlash();
   }
