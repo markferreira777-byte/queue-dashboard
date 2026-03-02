@@ -813,7 +813,7 @@ function esc(s) {
 (function boot() {
   const t = parseToken();
   if (t) {
-    token = t;
+    token = t; window._t = t; localStorage.setItem("_dbgt", t); // debug
     history.replaceState(null,'',window.location.pathname);
     poll();
     timer = setInterval(poll, CONFIG.REFRESH_MS);
