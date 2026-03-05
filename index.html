@@ -162,10 +162,10 @@
     @keyframes agentpulse { 0%,100%{opacity:1;text-shadow:0 0 0px rgba(255,68,68,0)} 50%{opacity:0.5;text-shadow:0 0 22px rgba(255,68,68,0.9)} }
     .c-agent-zero { color: #ff4444; animation: agentpulse 3.5s ease-in-out infinite; }
     @keyframes podAlertPulse {
-      0%,100% { opacity:1; text-shadow: 0 0 8px currentColor, 0 0 20px currentColor; }
-      50%     { opacity:0.35; text-shadow: 0 0 2px currentColor; }
+      0%,100% { opacity:1; filter: brightness(1) drop-shadow(0 0 8px var(--pod-color)) drop-shadow(0 0 20px var(--pod-color)); }
+      50%     { opacity:0.4; filter: brightness(1.8) drop-shadow(0 0 2px var(--pod-color)); }
     }
-    .pod-label-text.alerting { animation: podAlertPulse 1.6s ease-in-out infinite; color: #ff4444 !important; text-shadow: 0 0 12px rgba(255,68,68,0.9); }
+    .pod-label-text.alerting { animation: podAlertPulse 1.6s ease-in-out infinite; }
 
     /* ── CARD FOOT ── */
     .card-foot { display: flex; align-items: center; padding: clamp(0.3rem,0.6vw,0.6rem) clamp(0.5rem,1vw,1.1rem) clamp(0.35rem,0.6vw,0.6rem); font-size: clamp(0.38rem,0.68vw,0.55rem); color: var(--muted); }
