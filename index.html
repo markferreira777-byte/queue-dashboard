@@ -96,7 +96,7 @@
     /* ── MAIN GRID: pods left, voice panels right ── */
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 1fr calc((100% - clamp(0.6rem,1.2vw,1.1rem)) / 4 - clamp(64px,8vw,110px) / 3);
       gap: clamp(0.6rem,1.2vw,1.1rem);
       align-items: stretch;
     }
@@ -156,6 +156,7 @@
       font-family: var(--font-h); font-size: clamp(0.7rem,1.1vw,0.95rem); font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase; color: #fff; line-height: 1.2;
       text-shadow: 0 0 14px color-mix(in srgb, var(--panel-color) 50%, transparent);
+      text-align: center;
     }
     @keyframes panelAlertPulse {
       0%,100% { opacity:1; text-shadow: 0 0 8px var(--panel-color), 0 0 20px var(--panel-color); filter: brightness(1.5); }
@@ -338,7 +339,7 @@ function allQueues() {
   <div class="view-all-bar">
     <a class="btn-view-all" id="btn-all-queues" href="#" target="_blank">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      View All Care Team Queues
+      View in Genesys for Details
     </a>
   </div>
 
