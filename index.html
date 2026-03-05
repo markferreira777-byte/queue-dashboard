@@ -437,13 +437,15 @@ function cardClass(waiting,ag) {
   return 'ok';
 }
 function waitNumColor(w) {
-  if(w>=CONFIG.CRIT_WAITING) return '#ff5555';
-  if(w>=CONFIG.WARN_WAITING) return '#ffab00';
+  if(w>=2) return '#ff4444';
+  if(w===1) return '#ffcc00';
   return '#e2e8f0';
 }
 function agentNumColor(ag) {
   if(ag===null||ag===0) return null;
-  if(ag<=2) return '#ffab00';
+  if(ag===1) return '#4dff91';
+  if(ag===2) return '#1aff6e';
+  if(ag===3) return '#00f060';
   return '#00e676';
 }
 function channelIcon(label) {
