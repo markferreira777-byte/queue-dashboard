@@ -80,26 +80,38 @@
                   0 0 56px color-mix(in srgb, var(--pod-color) 10%, transparent);
       background: rgba(4,7,15,0.5);
     }
+
+    /* ── POD LABEL SIDEBAR — wider to fit full name ── */
     .pod-label-col {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: clamp(22px,3vw,38px); min-width: clamp(22px,3vw,38px);
-      background: color-mix(in srgb, var(--pod-color) 8%, rgba(4,7,15,0.6));
-      border-right: 1px solid color-mix(in srgb, var(--pod-color) 25%, transparent);
-      padding: 0.5rem 0; flex-shrink: 0;
+      width: clamp(48px, 6vw, 72px);
+      min-width: clamp(48px, 6vw, 72px);
+      background: color-mix(in srgb, var(--pod-color) 10%, rgba(4,7,15,0.7));
+      border-right: 1px solid color-mix(in srgb, var(--pod-color) 30%, transparent);
+      padding: 0.75rem 0.25rem;
+      flex-shrink: 0;
     }
     .pod-label-text {
-      font-family: var(--font-h); font-size: clamp(0.55rem,1vw,0.75rem); font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase; color: var(--pod-color);
-      writing-mode: vertical-lr; text-orientation: mixed; transform: rotate(180deg);
-      text-shadow: 0 0 12px color-mix(in srgb, var(--pod-color) 60%, transparent);
+      font-family: var(--font-h);
+      font-size: clamp(0.75rem, 1.4vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--pod-color);
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      text-shadow: 0 0 16px color-mix(in srgb, var(--pod-color) 70%, transparent);
       line-height: 1;
+      white-space: nowrap;
     }
+
     .pod-queues {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       flex: 1; min-width: 0; gap: 0;
     }
-    .pod-queues > .card { border-radius: 0; border-right: 1px solid rgba(255,255,255,0.04); }
+    .pod-queues > .card { border-radius: 0; border-right: 1px solid rgba(255,255,255,0.05); }
     .pod-queues > .card:last-child { border-right: none; }
 
     /* ── CARD ── */
@@ -138,7 +150,7 @@
 
     /* ── STATS ── */
     .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; }
-    .stat  { padding: clamp(0.5rem,1.2vw,1.15rem) clamp(0.3rem,0.6vw,0.6rem) clamp(0.2rem,0.4vw,0.35rem); display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: flex-end; }
+    .stat  { padding: clamp(0.5rem,1.2vw,1.15rem) clamp(0.3rem,0.6vw,0.6rem) clamp(0.4rem,0.8vw,0.8rem); display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: flex-end; }
     .stat-label { font-family: var(--font-h); font-size: clamp(0.44rem,0.8vw,0.62rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7aafd4; margin-bottom: clamp(0.2rem,0.4vw,0.35rem); height: 2.4em; display:block; text-align:center; line-height:1.2; }
     .stat-val   { font-family: var(--font-h); font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 700; line-height: 1; letter-spacing: -0.01em; transition: color 0.5s; }
     .stat-unit  { font-size: clamp(0.4rem,0.68vw,0.6rem); color: #7aafd4; margin-top: 0.2rem; letter-spacing: 0.06em; }
@@ -147,13 +159,8 @@
     @keyframes agentpulse { 0%,100%{opacity:1;text-shadow:0 0 0px rgba(255,68,68,0)} 50%{opacity:0.5;text-shadow:0 0 22px rgba(255,68,68,0.9)} }
     .c-agent-zero { color: #ff4444; animation: agentpulse 3.5s ease-in-out infinite; }
 
-    /* ── WAVE ROW ── */
-    .wave-row  { display: grid; grid-template-columns: 1fr 1fr 1fr; border: none; }
-    .wave-cell { display: flex; align-items: center; justify-content: center; height: clamp(22px,3vw,34px); position: relative; overflow: hidden; background: transparent; }
-    .wave-cell canvas { display: block; position: absolute; left: 0; top: 0; border: 0; outline: none; opacity: 0; transition: opacity 0.3s; }
-
     /* ── CARD FOOT ── */
-    .card-foot { display: flex; align-items: center; padding: clamp(0.25rem,0.5vw,0.5rem) clamp(0.5rem,1vw,1.1rem) clamp(0.3rem,0.55vw,0.55rem); font-size: clamp(0.38rem,0.68vw,0.55rem); color: var(--muted); }
+    .card-foot { display: flex; align-items: center; padding: clamp(0.3rem,0.6vw,0.6rem) clamp(0.5rem,1vw,1.1rem) clamp(0.35rem,0.6vw,0.6rem); font-size: clamp(0.38rem,0.68vw,0.55rem); color: var(--muted); }
     .foot-left { display: flex; align-items: center; gap: 0.4rem; }
     .act-dot   { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
     .act-dot.live { background: var(--green); box-shadow: 0 0 6px rgba(0,230,118,0.8); animation: livepulse 2s ease-in-out infinite; }
@@ -294,8 +301,6 @@ function allQueues() { return CONFIG.PODS.flatMap(p => p.queues); }
 document.querySelectorAll('#header-logo, #auth-logo').forEach(el => el.src = LOGO_SRC);
 
 let token = null, timer = null, firstRender = true, lastUpdated = null, secondsTimer = null;
-const waveRegistry = {};
-const allWaves = [];
 
 // ── CLOCK ──
 setInterval(() => {
@@ -446,41 +451,6 @@ function channelIcon(label) {
 }
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
-// ── WAVES ──
-let animFrameId=null;
-function initWaves(key, waiting, agents, phaseOffset) {
-  const canvases=[0,1,2].map(i=>document.getElementById(`wc-${key}-${i}`));
-  const waves=canvases.map((canvas,i)=>({
-    canvas, ctx:canvas?canvas.getContext('2d'):null,
-    phase:phaseOffset+i*1.4, speed:0.018+i*0.006,
-    color:i===0?'rgba(0,180,255,':i===1?'rgba(0,230,118,':'rgba(120,120,255,',
-    amp:4, alpha:0.6
-  }));
-  waves.forEach(w=>{if(w.canvas) w.canvas.style.opacity='1';});
-  return waves;
-}
-function updateWaveColors(waves,waiting,agents) {
-  if(!waves) return;
-  waves.forEach((w,i)=>{
-    if(agents===0) w.color=i===0?'rgba(255,60,60,':i===1?'rgba(255,80,80,':'rgba(200,40,40,';
-    else if(waiting>=CONFIG.CRIT_WAITING) w.color=i===0?'rgba(255,80,50,':i===1?'rgba(255,60,60,':'rgba(200,50,50,';
-    else if(waiting>=CONFIG.WARN_WAITING) w.color=i===0?'rgba(255,171,0,':i===1?'rgba(255,140,0,':'rgba(200,100,0,';
-    else { w.color=i===0?'rgba(0,180,255,':i===1?'rgba(0,230,118,':'rgba(120,120,255,'; }
-  });
-}
-function drawWave(w) {
-  if(!w.canvas||!w.ctx) return;
-  const {canvas,ctx,amp,alpha} = w;
-  const pw=canvas.parentElement?.offsetWidth||90, ph=canvas.parentElement?.offsetHeight||28;
-  if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}
-  ctx.clearRect(0,0,pw,ph);
-  ctx.beginPath(); ctx.moveTo(0,ph/2);
-  for(let x=0;x<=pw;x++){ctx.lineTo(x,ph/2+Math.sin(x*0.045+w.phase)*amp);}
-  ctx.strokeStyle=`${w.color}${alpha})`; ctx.lineWidth=1.5; ctx.stroke();
-  w.phase+=w.speed;
-}
-function animLoop() { allWaves.forEach(drawWave); animFrameId=requestAnimationFrame(animLoop); }
-
 // ── RENDER ──
 function render(obs, agents) {
   const container=document.getElementById('pods-container');
@@ -492,10 +462,14 @@ function render(obs, agents) {
       podRow=document.createElement('div');
       podRow.id=`pod-row-${pod.id}`; podRow.className='pod-row';
       podRow.style.setProperty('--pod-color',pod.color);
+
+      // POD label sidebar
       const labelCol=document.createElement('div'); labelCol.className='pod-label-col';
-      const labelSpan=document.createElement('div'); labelSpan.className='pod-label-text';
-      labelSpan.innerHTML=pod.label.split('').join('<br/>');
+      const labelSpan=document.createElement('span'); labelSpan.className='pod-label-text';
+      labelSpan.textContent=pod.label;
       labelCol.appendChild(labelSpan); podRow.appendChild(labelCol);
+
+      // Queue grid
       const queuesDiv=document.createElement('div'); queuesDiv.className='pod-queues'; queuesDiv.id=`pod-queues-${pod.id}`;
       podRow.appendChild(queuesDiv); container.appendChild(podRow);
     }
@@ -538,11 +512,6 @@ function render(obs, agents) {
               <div class="stat-unit" id="su-lw-${key}">${lw.u}</div>
             </div>
           </div>
-          <div class="wave-row">
-            <div class="wave-cell"><canvas id="wc-${key}-0" width="1" height="1"></canvas></div>
-            <div class="wave-cell"><canvas id="wc-${key}-1" width="1" height="1"></canvas></div>
-            <div class="wave-cell"><canvas id="wc-${key}-2" width="1" height="1"></canvas></div>
-          </div>
           <div class="card-foot">
             <div class="foot-left">
               <span class="act-dot live"></span>
@@ -550,8 +519,6 @@ function render(obs, agents) {
             </div>
           </div>`;
         queuesDiv.appendChild(card);
-        const entry=initWaves(key,o.waiting,ag??0,podIdx*2.1+i*1.1);
-        waveRegistry[key]=entry; allWaves.push(...entry);
       } else {
         card.className=`card ${cc}`;
         const badge=document.getElementById(`badge-${key}`);
@@ -573,12 +540,10 @@ function render(obs, agents) {
         if(suLw) suLw.textContent=lw.u;
         const suWait=document.getElementById(`su-wait-${key}`);
         if(suWait) suWait.textContent=`interaction${o.waiting!==1?'s':''}`;
-        updateWaveColors(waveRegistry[key],o.waiting,ag??0);
       }
     });
   });
 
-  if(firstRender) animLoop();
   firstRender=false;
 }
 
