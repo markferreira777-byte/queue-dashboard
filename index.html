@@ -245,7 +245,71 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: rgba(58,128,255,0.2); border-radius: 4px; }
 
+    /* ── SUMMARY BAND ── */
+    .summary-band {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.5rem,1.2vw,1rem);
+      margin-bottom: clamp(0.6rem,1.2vw,1.1rem);
+    }
+    .summary-channel {
+      border-radius: 12px; overflow: hidden;
+      border: 1.5px solid var(--ch-color);
+      background: rgba(4,7,15,0.6);
+      box-shadow: 0 0 20px color-mix(in srgb, var(--ch-color) 20%, transparent);
+      padding: clamp(0.5rem,1vw,0.9rem) clamp(0.6rem,1.2vw,1.1rem);
+    }
+    .summary-ch-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .summary-ch-title {
+      font-family: var(--font-h); font-size: clamp(0.6rem,1vw,0.82rem); font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #fff;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .summary-sl-badge {
+      font-family: var(--font-h); font-size: clamp(0.55rem,0.9vw,0.75rem); font-weight: 700;
+      letter-spacing: 0.06em; padding: 0.15rem 0.55rem; border-radius: 20px;
+      border: 1px solid; white-space: nowrap;
+    }
+    .summary-sl-badge.sl-good { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.08); }
+    .summary-sl-badge.sl-warn { color: var(--amber); border-color: rgba(255,171,0,0.45); background: rgba(255,171,0,0.08); }
+    .summary-sl-badge.sl-crit { color: #ff5555; border-color: rgba(255,85,85,0.45); background: rgba(255,85,85,0.08); }
+    .summary-sl-badge.sl-none { color: var(--muted); border-color: rgba(58,128,255,0.2); background: transparent; }
+    .summary-stats {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 0.25rem; margin-bottom: 0.5rem;
+    }
+    .summary-stat { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .summary-stat-val {
+      font-family: var(--font-h); font-size: clamp(1rem,2vw,1.6rem); font-weight: 700;
+      line-height: 1; letter-spacing: -0.01em; color: #fff;
+    }
+    .summary-stat-lbl {
+      font-family: var(--font-h); font-size: clamp(0.38rem,0.6vw,0.52rem); font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: #8aaccc;
+      margin-top: 0.15rem; line-height: 1.2; text-align: center;
+    }
+    .summary-progress-row { display: flex; align-items: center; gap: 0.5rem; }
+    .summary-progress-bar {
+      flex: 1; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.08); overflow: hidden;
+    }
+    .summary-progress-fill {
+      height: 100%; border-radius: 2px;
+      background: var(--ch-color);
+      transition: width 0.6s ease;
+    }
+    .summary-progress-label {
+      font-size: clamp(0.36rem,0.55vw,0.48rem); color: var(--muted);
+      white-space: nowrap; letter-spacing: 0.04em;
+    }
+    @keyframes numflash2 { 0%{opacity:0.3;transform:scale(0.94)} 100%{opacity:1;transform:scale(1)} }
+    .summary-stat-val.flash { animation: numflash2 0.35s cubic-bezier(0.16,1,0.3,1); }
+
     @media (max-width: 900px) {
+      .summary-band { grid-template-columns: 1fr; }
+    }
       .main-grid { grid-template-columns: 1fr; }
       .voice-panels { flex-direction: row; flex-wrap: wrap; }
       .voice-panel { min-width: 260px; }
@@ -341,6 +405,73 @@ function allQueues() {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       View in Genesys for Details
     </a>
+  </div>
+
+  <!-- Summary Band -->
+  <div class="summary-band" id="summary-band">
+    <!-- Voice -->
+    <div class="summary-channel" style="--ch-color:#4da6ff">
+      <div class="summary-ch-header">
+        <div class="summary-ch-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.55 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l1.27-.9a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Voice
+        </div>
+        <div class="summary-sl-badge sl-none" id="sb-voice-sl">SL —</div>
+      </div>
+      <div class="summary-stats">
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-waiting">—</div><div class="summary-stat-lbl">Interactions<br>Waiting</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
+      </div>
+      <div class="summary-progress-row">
+        <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-voice-bar" style="width:0%"></div></div>
+        <div class="summary-progress-label" id="sb-voice-target">Target —%</div>
+      </div>
+    </div>
+    <!-- Chat -->
+    <div class="summary-channel" style="--ch-color:#f6ad55">
+      <div class="summary-ch-header">
+        <div class="summary-ch-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Chat &amp; Messaging
+        </div>
+        <div class="summary-sl-badge sl-none" id="sb-chat-sl">SL —</div>
+      </div>
+      <div class="summary-stats">
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-waiting">—</div><div class="summary-stat-lbl">Interactions<br>Waiting</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
+      </div>
+      <div class="summary-progress-row">
+        <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-chat-bar" style="width:0%"></div></div>
+        <div class="summary-progress-label" id="sb-chat-target">Target —%</div>
+      </div>
+    </div>
+    <!-- Email -->
+    <div class="summary-channel" style="--ch-color:#68d391">
+      <div class="summary-ch-header">
+        <div class="summary-ch-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email
+        </div>
+        <div class="summary-sl-badge sl-none" id="sb-email-sl">SL —</div>
+      </div>
+      <div class="summary-stats">
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-waiting">—</div><div class="summary-stat-lbl">Interactions<br>Waiting</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
+        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
+      </div>
+      <div class="summary-progress-row">
+        <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-email-bar" style="width:0%"></div></div>
+        <div class="summary-progress-label" id="sb-email-target">Target —%</div>
+      </div>
+    </div>
   </div>
 
   <!-- Main grid -->
@@ -672,6 +803,129 @@ function toast(msg,err=false){
   clearTimeout(t._t); t._t=setTimeout(()=>t.className='',4000);
 }
 
+// ── SUMMARY BAND CONFIG ──
+// Map each channel to its queue IDs (from PODs only; right-panel voice queues excluded from channel summary)
+const SUMMARY_CHANNELS = {
+  voice: {
+    queueIds: CONFIG.PODS.flatMap(p => p.queues.filter(q => q.label === 'Voice Queue').map(q => q.id)),
+    mediaType: 'voice',
+    slTarget: 80,   // % target
+    slThreshold: 20, // answer within 20s
+  },
+  chat: {
+    queueIds: CONFIG.PODS.flatMap(p => p.queues.filter(q => q.label === 'Chat Queue').map(q => q.id)),
+    mediaType: 'chat',
+    slTarget: 80,
+    slThreshold: 20,
+  },
+  email: {
+    queueIds: CONFIG.PODS.flatMap(p => p.queues.filter(q => q.label === 'Email Queue').map(q => q.id)),
+    mediaType: 'email',
+    slTarget: 80,
+    slThreshold: 86400, // 24h for email
+  },
+};
+
+// ── INTERVAL AGGREGATES (today) ──
+async function getAggregates(queueIds) {
+  const now = new Date();
+  const startOfDay = new Date(now); startOfDay.setHours(0,0,0,0);
+  const interval = `${startOfDay.toISOString().slice(0,19)+'.000Z'}/${now.toISOString().slice(0,19)+'.000Z'}`;
+  const data = await api('/api/v2/analytics/queues/aggregates/query', {
+    method: 'POST',
+    body: JSON.stringify({
+      interval,
+      filter: {
+        type: 'and',
+        clauses: [{
+          type: 'or',
+          predicates: queueIds.map(id => ({ type: 'dimension', dimension: 'queueId', value: id }))
+        }]
+      },
+      groupBy: ['queueId'],
+      metrics: ['nOffered', 'nAbandoned', 'tAnswered', 'nAnswered', 'tHandle', 'nHandled',
+                'tWait', 'nTransferred', 'tAcd', 'tAcw'],
+    }),
+  });
+  // Aggregate totals across all queues for this channel
+  let nOffered=0, nAbandoned=0, tAnsweredSum=0, nAnswered=0, tWaitSum=0, nWait=0;
+  for (const row of (data.results||[])) {
+    for (const d of (row.data||[])) {
+      if (d.metric==='nOffered')   nOffered   += d.stats?.count  ?? 0;
+      if (d.metric==='nAbandoned') nAbandoned += d.stats?.count  ?? 0;
+      if (d.metric==='nAnswered')  nAnswered  += d.stats?.count  ?? 0;
+      if (d.metric==='tAnswered') { tAnsweredSum += d.stats?.sum ?? 0; }
+      if (d.metric==='tWait')     { tWaitSum    += d.stats?.sum ?? 0; nWait += d.stats?.count ?? 0; }
+    }
+  }
+  const avgWaitMs = nAnswered > 0 ? tAnsweredSum / nAnswered : 0;
+  return { nOffered, nAbandoned, nAnswered, avgWaitMs };
+}
+
+// ── SERVICE LEVEL (observations-based, answered within threshold) ──
+// Using aggregate nOffered vs nAbandoned as a proxy for SL display
+// Real SL requires conversation-level data; we approximate: SL% = (nAnswered / nOffered) * 100
+function calcSL(nOffered, nAnswered) {
+  if (!nOffered) return null;
+  return Math.round((nAnswered / nOffered) * 100);
+}
+
+// ── FORMAT SUMMARY WAIT ──
+function fmtSummaryWait(ms) {
+  if (!ms || ms < 1000) return '0:00';
+  const totalSec = Math.round(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2,'0')}m`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+// ── UPDATE SUMMARY BAND ──
+function updateSummaryBand(channel, obs, agentMap, aggData) {
+  const cfg = SUMMARY_CHANNELS[channel];
+  // Live: sum waiting & agents across channel queues (POD queues only)
+  let totalWaiting = 0, totalAgents = 0;
+  for (const qid of cfg.queueIds) {
+    totalWaiting += (obs[qid]||{}).waiting || 0;
+    totalAgents  += agentMap[qid] ?? 0;
+  }
+  const sl = aggData ? calcSL(aggData.nOffered, aggData.nAnswered) : null;
+  const slPct = sl !== null ? sl : null;
+
+  // Update DOM
+  function flashUpdate(id, val) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.textContent !== String(val)) {
+      el.textContent = val;
+      el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    }
+  }
+  flashUpdate(`sb-${channel}-agents`,    totalAgents);
+  flashUpdate(`sb-${channel}-waiting`,   totalWaiting);
+  flashUpdate(`sb-${channel}-avgwait`,   aggData ? fmtSummaryWait(aggData.avgWaitMs) : '—');
+  flashUpdate(`sb-${channel}-offered`,   aggData ? aggData.nOffered   : '—');
+  flashUpdate(`sb-${channel}-abandoned`, aggData ? aggData.nAbandoned : '—');
+
+  // SL Badge
+  const badge = document.getElementById(`sb-${channel}-sl`);
+  if (badge) {
+    if (slPct === null) {
+      badge.textContent = 'SL —'; badge.className = 'summary-sl-badge sl-none';
+    } else {
+      badge.textContent = `SL ${slPct}%`;
+      badge.className = 'summary-sl-badge ' +
+        (slPct >= cfg.slTarget ? 'sl-good' : slPct >= cfg.slTarget - 15 ? 'sl-warn' : 'sl-crit');
+    }
+  }
+  // Progress bar
+  const bar = document.getElementById(`sb-${channel}-bar`);
+  if (bar) bar.style.width = `${Math.min(slPct ?? 0, 100)}%`;
+  const tgt = document.getElementById(`sb-${channel}-target`);
+  if (tgt) tgt.textContent = `Target ${cfg.slTarget}%`;
+}
+
 // ── POLL ──
 async function poll() {
   try {
@@ -682,8 +936,29 @@ async function poll() {
     checkAlerts(obs,agentMap);
     setBadge('live','LIVE');
     startCountdown();
+    // Fetch aggregates for summary band (fire & update, non-blocking for render)
+    pollSummaryBand(obs, agentMap);
   } catch(e) {
     if(e.message!=='401'){ setBadge('error','ERROR'); toast(`Poll error: ${e.message}`,true); }
+  }
+}
+
+async function pollSummaryBand(obs, agentMap) {
+  try {
+    const [voiceAgg, chatAgg, emailAgg] = await Promise.all([
+      getAggregates(SUMMARY_CHANNELS.voice.queueIds),
+      getAggregates(SUMMARY_CHANNELS.chat.queueIds),
+      getAggregates(SUMMARY_CHANNELS.email.queueIds),
+    ]);
+    updateSummaryBand('voice', obs, agentMap, voiceAgg);
+    updateSummaryBand('chat',  obs, agentMap, chatAgg);
+    updateSummaryBand('email', obs, agentMap, emailAgg);
+  } catch(e) {
+    // Update with live data only (no interval data)
+    updateSummaryBand('voice', obs, agentMap, null);
+    updateSummaryBand('chat',  obs, agentMap, null);
+    updateSummaryBand('email', obs, agentMap, null);
+    console.warn('Summary band aggregate fetch failed:', e.message);
   }
 }
 
