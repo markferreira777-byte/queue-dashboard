@@ -246,77 +246,103 @@
     ::-webkit-scrollbar-thumb { background: rgba(58,128,255,0.2); border-radius: 4px; }
 
     /* ── SUMMARY BAND ── */
-    .summary-band {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: clamp(0.5rem,1.2vw,1rem);
+    .summary-row {
+      display: flex;
+      border-radius: 16px; overflow: hidden;
+      border: 2px solid rgba(58,128,255,0.45);
+      box-shadow: 0 0 28px rgba(58,128,255,0.12), 0 0 56px rgba(58,128,255,0.05);
+      background: rgba(4,7,15,0.5);
       margin-bottom: clamp(0.6rem,1.2vw,1.1rem);
     }
-    .summary-channel {
-      border-radius: 14px;
-      border: 1.5px solid var(--ch-color);
-      background: rgba(4,7,15,0.65);
-      box-shadow: 0 0 28px color-mix(in srgb, var(--ch-color) 18%, transparent),
-                  0 0 56px color-mix(in srgb, var(--ch-color) 6%, transparent);
-      padding: 1rem 1.4rem 0.75rem;
-      display: flex; flex-direction: column; gap: 0;
+    /* ── LABEL COL ── */
+    .summary-label-col {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: clamp(90px,9vw,130px); min-width: clamp(90px,9vw,130px);
+      background: rgba(58,128,255,0.07);
+      border-right: 1px solid rgba(58,128,255,0.22);
+      padding: 0.9rem 0.6rem; flex-shrink: 0; gap: 0.45rem;
     }
+    .summary-label-title {
+      font-family: var(--font-h); font-size: clamp(0.75rem,1.2vw,1rem); font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #4da6ff;
+      text-shadow: 0 0 16px rgba(77,166,255,0.55);
+      text-align: center; line-height: 1.2;
+    }
+    .summary-label-sub {
+      font-family: var(--font-b); font-size: 0.48rem; font-weight: 500;
+      color: var(--muted); text-align: center; line-height: 1.4;
+    }
+    /* ── CHANNEL COLUMNS ── */
+    .summary-channels {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      flex: 1; min-width: 0;
+    }
+    .summary-channel {
+      display: flex; flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.18);
+      background: rgba(8,16,40,0.7);
+      position: relative;
+    }
+    .summary-channel:last-child { border-right: none; }
     .summary-ch-header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 0.75rem;
+      padding: 0.55rem 0.85rem 0.25rem;
     }
     .summary-ch-title {
-      font-family: var(--font-h); font-size: clamp(0.65rem,1.1vw,0.88rem); font-weight: 700;
+      font-family: var(--font-h); font-size: 0.78rem; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase; color: #fff;
-      display: flex; align-items: center; gap: 0.45rem;
+      display: flex; align-items: center; gap: 0.35rem;
     }
-    .summary-ch-title svg { opacity: 0.8; flex-shrink: 0; }
+    .summary-ch-title svg { opacity: 0.85; flex-shrink: 0; }
     .summary-sl-badge {
-      font-family: var(--font-h); font-size: clamp(0.48rem,0.75vw,0.62rem); font-weight: 700;
-      letter-spacing: 0.08em; padding: 0.18rem 0.6rem; border-radius: 20px;
+      font-family: var(--font-h); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.08em; padding: 0.14rem 0.5rem; border-radius: 20px;
       border: 1px solid; white-space: nowrap;
     }
     .summary-sl-badge.sl-good { color: var(--green); border-color: rgba(0,230,118,0.45); background: rgba(0,230,118,0.08); }
     .summary-sl-badge.sl-warn { color: var(--amber); border-color: rgba(255,171,0,0.45); background: rgba(255,171,0,0.08); }
     .summary-sl-badge.sl-crit { color: #ff5555; border-color: rgba(255,85,85,0.45); background: rgba(255,85,85,0.08); }
     .summary-sl-badge.sl-none { color: var(--muted); border-color: rgba(58,128,255,0.18); background: transparent; }
+    /* ── STATS ── */
     .summary-stats {
       display: grid; grid-template-columns: repeat(5, 1fr);
-      gap: 0; margin-bottom: 0.75rem;
-      align-items: end;
+      flex: 1; align-items: end;
+      padding: 0 0.3rem 0.45rem;
     }
+    .summary-stats.cols4 { grid-template-columns: repeat(4, 1fr); }
     .summary-stat {
       display: flex; flex-direction: column; align-items: center; text-align: center;
-      padding: 0 0.2rem;
+      padding: 0.3rem 0.15rem 0.15rem;
       border-right: 1px solid rgba(255,255,255,0.04);
     }
     .summary-stat:last-child { border-right: none; }
     .summary-stat-val {
-      font-family: var(--font-h) !important; font-size: 2.2rem !important; font-weight: 700 !important;
-      line-height: 1 !important; letter-spacing: -0.01em; color: #fff !important;
-      margin-bottom: 0.35rem;
+      font-family: var(--font-h); font-size: 1.7rem; font-weight: 700;
+      line-height: 1; letter-spacing: -0.01em; color: #fff;
+      margin-bottom: 0.25rem; white-space: nowrap;
     }
     .summary-stat-lbl {
-      font-family: var(--font-h); font-size: 0.52rem; font-weight: 700;
+      font-family: var(--font-h); font-size: 0.48rem; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase; color: #7a9ec4;
-      line-height: 1.3; text-align: center;
+      line-height: 1.25; text-align: center;
     }
+    /* ── PROGRESS BAR ── */
     .summary-progress-row {
-      display: flex; align-items: center; gap: 0.55rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.3rem 0.85rem 0.45rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
     }
     .summary-progress-bar {
-      flex: 1; height: 3px; border-radius: 2px;
+      flex: 1; height: 1px; border-radius: 1px;
       background: rgba(255,255,255,0.07); overflow: hidden;
     }
     .summary-progress-fill {
-      height: 100%; border-radius: 2px;
-      background: var(--ch-color);
-      transition: width 0.8s ease;
+      height: 100%; border-radius: 1px;
+      transition: width 0.8s ease, background 0.6s ease;
     }
     .summary-progress-label {
-      font-family: var(--font-h); font-size: 0.52rem; font-weight: 600;
-      color: var(--muted); white-space: nowrap; letter-spacing: 0.06em;
+      font-family: var(--font-h); font-size: 0.48rem; font-weight: 600;
+      color: var(--muted); white-space: nowrap; letter-spacing: 0.05em;
     }
     @keyframes numflash2 { 0%{opacity:0.3;transform:scale(0.94)} 100%{opacity:1;transform:scale(1)} }
     .summary-stat-val.flash { animation: numflash2 0.35s cubic-bezier(0.16,1,0.3,1); }
@@ -421,68 +447,74 @@ function allQueues() {
   </div>
 
   <!-- Summary Band -->
-  <div class="summary-band" id="summary-band">
-    <!-- Voice -->
-    <div class="summary-channel" style="--ch-color:#4da6ff">
-      <div class="summary-ch-header">
-        <div class="summary-ch-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.55 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l1.27-.9a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Voice
-        </div>
-        <div class="summary-sl-badge sl-none" id="sb-voice-sl">SL —</div>
-      </div>
-      <div class="summary-stats">
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-waiting">—</div><div class="summary-stat-lbl">Interactions<br>Waiting</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
-      </div>
-      <div class="summary-progress-row">
-        <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-voice-bar" style="width:0%"></div></div>
-        <div class="summary-progress-label" id="sb-voice-target">Target —%</div>
-      </div>
+  <div class="summary-row" id="summary-band">
+    <!-- Label -->
+    <div class="summary-label-col">
+      <div class="summary-label-title">Care Team<br>All Queues</div>
+      <div class="summary-label-sub">Stats from all Care Team queues combined</div>
     </div>
-    <!-- Chat -->
-    <div class="summary-channel" style="--ch-color:#f6ad55">
-      <div class="summary-ch-header">
-        <div class="summary-ch-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Chat &amp; Messaging
+    <!-- Channels -->
+    <div class="summary-channels">
+      <!-- Voice -->
+      <div class="summary-channel">
+        <div class="summary-ch-header">
+          <div class="summary-ch-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4da6ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.55 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l1.27-.9a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Voice
+          </div>
+          <div class="summary-sl-badge sl-none" id="sb-voice-sl">SL —</div>
         </div>
-        <div class="summary-sl-badge sl-none" id="sb-chat-sl">SL —</div>
-      </div>
-      <div class="summary-stats">
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-waiting">—</div><div class="summary-stat-lbl">Interactions<br>Waiting</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
-      </div>
-      <div class="summary-progress-row">
-        <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-chat-bar" style="width:0%"></div></div>
-        <div class="summary-progress-label" id="sb-chat-target">Target —%</div>
-      </div>
-    </div>
-    <!-- Email -->
-    <div class="summary-channel" style="--ch-color:#68d391">
-      <div class="summary-ch-header">
-        <div class="summary-ch-title">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Email
+        <div class="summary-stats">
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-waiting">—</div><div class="summary-stat-lbl" id="sb-voice-waiting-lbl">Interactions<br>Waiting</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-voice-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
         </div>
-        <div class="summary-sl-badge sl-none" id="sb-email-sl">SL —</div>
+        <div class="summary-progress-row">
+          <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-voice-bar" style="width:0%"></div></div>
+          <div class="summary-progress-label" id="sb-voice-target">Target —%</div>
+        </div>
       </div>
-      <div class="summary-stats">
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-waiting">—</div><div class="summary-stat-lbl">Interactions<br>Waiting</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
-        <div class="summary-stat"><div class="summary-stat-val" id="sb-email-abandoned">—</div><div class="summary-stat-lbl">Abandoned<br>Today</div></div>
+      <!-- Chat -->
+      <div class="summary-channel">
+        <div class="summary-ch-header">
+          <div class="summary-ch-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f6ad55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Chat &amp; Messaging
+          </div>
+          <div class="summary-sl-badge sl-none" id="sb-chat-sl">SL —</div>
+        </div>
+        <div class="summary-stats cols4">
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-waiting">—</div><div class="summary-stat-lbl" id="sb-chat-waiting-lbl">Interactions<br>Waiting</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-chat-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
+        </div>
+        <div class="summary-progress-row">
+          <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-chat-bar" style="width:0%"></div></div>
+          <div class="summary-progress-label" id="sb-chat-target">Target —%</div>
+        </div>
       </div>
-      <div class="summary-progress-row">
-        <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-email-bar" style="width:0%"></div></div>
-        <div class="summary-progress-label" id="sb-email-target">Target —%</div>
+      <!-- Email -->
+      <div class="summary-channel">
+        <div class="summary-ch-header">
+          <div class="summary-ch-title">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#68d391" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Email
+          </div>
+          <div class="summary-sl-badge sl-none" id="sb-email-sl">SL —</div>
+        </div>
+        <div class="summary-stats cols4">
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-email-agents">—</div><div class="summary-stat-lbl">Agents<br>On-Queue</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-email-waiting">—</div><div class="summary-stat-lbl" id="sb-email-waiting-lbl">Interactions<br>Waiting</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-email-avgwait">—</div><div class="summary-stat-lbl">Avg Wait<br>Today</div></div>
+          <div class="summary-stat"><div class="summary-stat-val" id="sb-email-offered">—</div><div class="summary-stat-lbl">Offered<br>Today</div></div>
+        </div>
+        <div class="summary-progress-row">
+          <div class="summary-progress-bar"><div class="summary-progress-fill" id="sb-email-bar" style="width:0%"></div></div>
+          <div class="summary-progress-label" id="sb-email-target">Target —%</div>
+        </div>
       </div>
     </div>
   </div>
@@ -944,11 +976,17 @@ function updateSummaryBand(channel, obs, agentMap, aggData) {
       el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
     }
   }
-  flashUpdate(`sb-${channel}-agents`,    totalAgents);
-  flashUpdate(`sb-${channel}-waiting`,   totalWaiting);
-  flashUpdate(`sb-${channel}-avgwait`,   aggData ? fmtSummaryWait(aggData.avgWaitMs) : '—');
-  flashUpdate(`sb-${channel}-offered`,   aggData ? aggData.nOffered   : '—');
-  flashUpdate(`sb-${channel}-abandoned`, aggData ? (aggData.nAbandoned ?? '—') : '—');
+  flashUpdate(`sb-${channel}-agents`,  totalAgents);
+  flashUpdate(`sb-${channel}-waiting`, totalWaiting);
+  flashUpdate(`sb-${channel}-avgwait`, aggData ? fmtSummaryWait(aggData.avgWaitMs) : '—');
+  flashUpdate(`sb-${channel}-offered`, aggData ? aggData.nOffered : '—');
+  if (channel === 'voice') {
+    flashUpdate(`sb-${channel}-abandoned`, aggData ? (aggData.nAbandoned ?? '—') : '—');
+  }
+
+  // Singular/plural "Interaction(s) Waiting"
+  const waitLbl = document.getElementById(`sb-${channel}-waiting-lbl`);
+  if (waitLbl) waitLbl.innerHTML = totalWaiting === 1 ? 'Interaction<br>Waiting' : 'Interactions<br>Waiting';
 
   // SL Badge
   const badge = document.getElementById(`sb-${channel}-sl`);
@@ -961,9 +999,13 @@ function updateSummaryBand(channel, obs, agentMap, aggData) {
         (slPct >= cfg.slTarget ? 'sl-good' : slPct >= cfg.slTarget - 15 ? 'sl-warn' : 'sl-crit');
     }
   }
-  // Progress bar
+  // Progress bar — color thresholds: <25% red, <70% amber, >=70% green
   const bar = document.getElementById(`sb-${channel}-bar`);
-  if (bar) bar.style.width = `${Math.min(slPct ?? 0, 100)}%`;
+  if (bar) {
+    const pct = Math.min(slPct ?? 0, 100);
+    bar.style.width = `${pct}%`;
+    bar.style.background = pct < 25 ? '#ff4444' : pct < 70 ? '#ffab00' : '#00e676';
+  }
   const tgt = document.getElementById(`sb-${channel}-target`);
   if (tgt) tgt.textContent = `Target ${cfg.slTarget}%`;
 }
