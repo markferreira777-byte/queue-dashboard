@@ -840,47 +840,76 @@ const SUMMARY_CHANNELS = {
 };
 
 // ── INTERVAL AGGREGATES (today) ──
-async function getAggregates(queueIds) {
+// ── INTERVAL AGGREGATES (today) ──
+// Endpoint & metrics confirmed from HAR: /api/v2/analytics/conversations/aggregates/query
+// nOffered=stats.count | tAbandon.count=abandoned | tAnswered.count=answered, sum=wait ms
+// tWait.sum/count = avg wait across all offered | oServiceLevel has ratio
+async function getAggregates(queueIds, mediaType) {
   const now = new Date();
-  const startOfDay = new Date(now); startOfDay.setHours(0,0,0,0);
-  const interval = `${startOfDay.toISOString().slice(0,19)+'.000Z'}/${now.toISOString().slice(0,19)+'.000Z'}`;
-  const data = await api('/api/v2/analytics/queues/aggregates/query', {
+  const localMidnight = new Date(now);
+  localMidnight.setHours(0, 0, 0, 0);
+  const interval = `${localMidnight.toISOString()}/${now.toISOString()}`;
+
+  const data = await api('/api/v2/analytics/conversations/aggregates/query', {
     method: 'POST',
     body: JSON.stringify({
       interval,
       filter: {
         type: 'and',
-        clauses: [{
-          type: 'or',
-          predicates: queueIds.map(id => ({ type: 'dimension', dimension: 'queueId', value: id }))
-        }]
+        clauses: [
+          {
+            type: 'or',
+            predicates: queueIds.map(id => ({ dimension: 'queueId', value: id }))
+          },
+          {
+            type: 'or',
+            predicates: [{ type: 'dimension', dimension: 'mediaType', value: mediaType }]
+          }
+        ]
       },
       groupBy: ['queueId'],
-      metrics: ['nOffered', 'nAbandoned', 'tAnswered', 'nAnswered', 'tHandle', 'nHandled',
-                'tWait', 'nTransferred', 'tAcd', 'tAcw'],
+      metrics: ['nOffered', 'tAnswered', 'tAbandon', 'oServiceLevel', 'tWait'],
     }),
   });
-  // Aggregate totals across all queues for this channel
-  let nOffered=0, nAbandoned=0, tAnsweredSum=0, nAnswered=0, tWaitSum=0, nWait=0;
-  for (const row of (data.results||[])) {
-    for (const d of (row.data||[])) {
-      if (d.metric==='nOffered')   nOffered   += d.stats?.count  ?? 0;
-      if (d.metric==='nAbandoned') nAbandoned += d.stats?.count  ?? 0;
-      if (d.metric==='nAnswered')  nAnswered  += d.stats?.count  ?? 0;
-      if (d.metric==='tAnswered') { tAnsweredSum += d.stats?.sum ?? 0; }
-      if (d.metric==='tWait')     { tWaitSum    += d.stats?.sum ?? 0; nWait += d.stats?.count ?? 0; }
+
+  let nOffered=0, nAbandoned=0, tAnsweredCount=0, tAnsweredSum=0,
+      tWaitSum=0, tWaitCount=0, slNumerator=0, slDenominator=0;
+
+  for (const row of (data.results || [])) {
+    for (const d of (row.data || [])) {
+      for (const m of (d.metrics || [])) {
+        const s = m.stats || {};
+        switch (m.metric) {
+          case 'nOffered':      nOffered       += s.count ?? 0; break;
+          case 'tAbandon':      nAbandoned     += s.count ?? 0; break;
+          case 'tAnswered':     tAnsweredCount += s.count ?? 0;
+                                tAnsweredSum   += s.sum   ?? 0; break;
+          case 'tWait':         tWaitSum       += s.sum   ?? 0;
+                                tWaitCount     += s.count ?? 0; break;
+          case 'oServiceLevel': slNumerator    += s.numerator   ?? 0;
+                                slDenominator  += s.denominator ?? 0; break;
+        }
+      }
     }
   }
-  const avgWaitMs = nAnswered > 0 ? tAnsweredSum / nAnswered : 0;
-  return { nOffered, nAbandoned, nAnswered, avgWaitMs };
+
+  const avgWaitMs = tWaitCount > 0 ? tWaitSum / tWaitCount : 0;
+  const slRatio   = slDenominator > 0 ? slNumerator / slDenominator : null;
+  return { nOffered, nAbandoned, tAnsweredCount, avgWaitMs, slRatio };
 }
 
-// ── SERVICE LEVEL (observations-based, answered within threshold) ──
-// Using aggregate nOffered vs nAbandoned as a proxy for SL display
-// Real SL requires conversation-level data; we approximate: SL% = (nAnswered / nOffered) * 100
-function calcSL(nOffered, nAnswered) {
-  if (!nOffered) return null;
-  return Math.round((nAnswered / nOffered) * 100);
+// ── SERVICE LEVEL ──
+// Uses oServiceLevel.ratio from Genesys (the real SL metric)
+// Falls back to tAnsweredCount / nOffered if oServiceLevel not available
+function calcSL(aggData) {
+  if (!aggData) return null;
+  if (aggData.slRatio !== null && aggData.slRatio !== undefined) {
+    return Math.round(aggData.slRatio * 100);
+  }
+  if (aggData.nOffered > 0) {
+    return Math.round((aggData.tAnsweredCount / aggData.nOffered) * 100);
+  }
+  return null;
 }
 
 // ── FORMAT SUMMARY WAIT ──
@@ -903,7 +932,7 @@ function updateSummaryBand(channel, obs, agentMap, aggData) {
     totalWaiting += (obs[qid]||{}).waiting || 0;
     totalAgents  += agentMap[qid] ?? 0;
   }
-  const sl = aggData ? calcSL(aggData.nOffered, aggData.nAnswered) : null;
+  const sl = calcSL(aggData);
   const slPct = sl !== null ? sl : null;
 
   // Update DOM
@@ -919,7 +948,7 @@ function updateSummaryBand(channel, obs, agentMap, aggData) {
   flashUpdate(`sb-${channel}-waiting`,   totalWaiting);
   flashUpdate(`sb-${channel}-avgwait`,   aggData ? fmtSummaryWait(aggData.avgWaitMs) : '—');
   flashUpdate(`sb-${channel}-offered`,   aggData ? aggData.nOffered   : '—');
-  flashUpdate(`sb-${channel}-abandoned`, aggData ? aggData.nAbandoned : '—');
+  flashUpdate(`sb-${channel}-abandoned`, aggData ? (aggData.nAbandoned ?? '—') : '—');
 
   // SL Badge
   const badge = document.getElementById(`sb-${channel}-sl`);
@@ -959,9 +988,9 @@ async function poll() {
 async function pollSummaryBand(obs, agentMap) {
   try {
     const [voiceAgg, chatAgg, emailAgg] = await Promise.all([
-      getAggregates(SUMMARY_CHANNELS.voice.queueIds),
-      getAggregates(SUMMARY_CHANNELS.chat.queueIds),
-      getAggregates(SUMMARY_CHANNELS.email.queueIds),
+      getAggregates(SUMMARY_CHANNELS.voice.queueIds, 'voice'),
+      getAggregates(SUMMARY_CHANNELS.chat.queueIds,  'chat'),
+      getAggregates(SUMMARY_CHANNELS.email.queueIds, 'email'),
     ]);
     updateSummaryBand('voice', obs, agentMap, voiceAgg);
     updateSummaryBand('chat',  obs, agentMap, chatAgg);
