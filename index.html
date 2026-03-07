@@ -886,7 +886,7 @@ const SUMMARY_CHANNELS = {
   },
   chat: {
     queueIds: CONFIG.PODS.flatMap(p => p.queues.filter(q => q.label === 'Chat Queue').map(q => q.id)),
-    mediaType: 'chat',
+    mediaType: 'message', // Genesys API uses 'message' for chat/messaging
     slTarget: 80,
     slThreshold: 20,
   },
@@ -964,7 +964,7 @@ async function getPerQueueAggregates() {
   const queueMediaType = {};
   CONFIG.PODS.forEach(pod => pod.queues.forEach(q => {
     if (q.label === 'Voice Queue') queueMediaType[q.id] = 'voice';
-    else if (q.label === 'Chat Queue')  queueMediaType[q.id] = 'chat';
+    else if (q.label === 'Chat Queue')  queueMediaType[q.id] = 'message'; // Genesys uses 'message' not 'chat'
     else if (q.label === 'Email Queue') queueMediaType[q.id] = 'email';
   }));
   CONFIG.VOICE_PANELS.forEach(vp => { queueMediaType[vp.queueId] = 'voice'; });
