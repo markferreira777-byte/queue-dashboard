@@ -96,7 +96,7 @@
     /* ── MAIN GRID: pods left, voice panels right ── */
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr 304px;
+      grid-template-columns: 1fr 380px;
       gap: clamp(0.6rem,1.2vw,1.2rem);
       align-items: stretch;
     }
@@ -131,7 +131,7 @@
     .pod-label-text.alerting { animation: podAlertPulse 2.2s ease-in-out infinite; }
 
     .pod-queues {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: 1fr 1fr 1.55fr;
       flex: 1; min-width: 0;
     }
     .pod-queues > .card { border-radius: 0; border-right: 1px solid rgba(255,255,255,0.18); }
@@ -286,7 +286,7 @@
     }
     /* ── CHANNEL COLUMNS ── */
     .summary-channels {
-      display: grid; grid-template-columns: repeat(3, 1fr);
+      display: grid; grid-template-columns: 1fr 1fr 1.55fr;
       flex: 1; min-width: 0;
     }
     .summary-channel {
@@ -363,7 +363,7 @@
       .summary-band { grid-template-columns: 1fr; }
       .main-grid { grid-template-columns: 1fr; }
       .voice-panels { flex-direction: row; flex-wrap: wrap; }
-      .voice-panel { min-width: 260px; }
+      .voice-panel { min-width: 340px; }
     }
   </style>
 </head>
@@ -747,7 +747,7 @@ function buildCard(key, q, o, ag) {
       <div class="stat">
         <div class="stat-label">Waiting</div>
         <div class="stat-val" id="sv-wait-${key}" style="color:${wColor}">${o.waiting}</div>
-        <div class="stat-unit" id="su-wait-${key}">interaction${o.waiting!==1?'s':''}</div>
+
       </div>
       <div class="stat">
         <div class="stat-label">Agents on Queue</div>
@@ -762,12 +762,12 @@ function buildCard(key, q, o, ag) {
       <div class="stat stat-today">
         <div class="stat-label">Offered<br>Today</div>
         <div class="stat-val" id="sv-off-${key}" style="color:#c8dff5">—</div>
-        <div class="stat-unit" id="su-off-${key}">interactions</div>
+
       </div>
       ${isVoiceCard?`<div class="stat stat-today">
         <div class="stat-label">Abandoned<br>Today</div>
         <div class="stat-val" id="sv-abn-${key}" style="color:#ffab40">—</div>
-        <div class="stat-unit" id="su-abn-${key}">interactions</div>
+
       </div>`:''}
     </div>`;
 }
@@ -795,7 +795,6 @@ function updateCard(key, o, ag) {
   const lwEl=document.getElementById(`sv-lw-${key}`);
   if(lwEl&&lwEl.textContent!==lw.v){lwEl.textContent=lw.v;lwEl.classList.remove('flash');void lwEl.offsetWidth;lwEl.classList.add('flash');}
   const suLw=document.getElementById(`su-lw-${key}`); if(suLw) suLw.textContent=lw.u;
-  const suWait=document.getElementById(`su-wait-${key}`); if(suWait) suWait.textContent=`interaction${o.waiting!==1?'s':''}`;
 }
 
 // ── RENDER ──
@@ -1138,7 +1137,6 @@ function updateCardAgg(key, agg, isVoice) {
       offEl.textContent = agg.nOffered;
       offEl.classList.remove('flash'); void offEl.offsetWidth; offEl.classList.add('flash');
     }
-    if (offU) offU.textContent = agg.nOffered === 1 ? 'interaction' : 'interactions';
   }
   if (isVoice) {
     const abEl = document.getElementById(`sv-abn-${key}`);
@@ -1148,7 +1146,6 @@ function updateCardAgg(key, agg, isVoice) {
         abEl.textContent = agg.nAbandoned;
         abEl.classList.remove('flash'); void abEl.offsetWidth; abEl.classList.add('flash');
       }
-      if (abU) abU.textContent = agg.nAbandoned === 1 ? 'interaction' : 'interactions';
     }
   }
 }
