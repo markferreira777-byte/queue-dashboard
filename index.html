@@ -96,8 +96,8 @@
     /* ── MAIN GRID: pods left, voice panels right ── */
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr calc((100% - clamp(0.6rem,1.2vw,1.1rem)) / 3.2 - clamp(64px,8vw,110px) / 3);
-      gap: clamp(1.5rem,3vw,3rem);
+      grid-template-columns: 1fr 220px;
+      gap: clamp(1rem,2vw,1.8rem);
       align-items: stretch;
     }
 
@@ -119,7 +119,7 @@
       padding: 0.75rem 0.5rem; flex-shrink: 0;
     }
     .pod-label-text {
-      font-family: var(--font-h); font-size: clamp(0.85rem,1.6vw,1.3rem); font-weight: 700;
+      font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
       letter-spacing: 0.14em; text-transform: uppercase; color: var(--pod-color);
       text-shadow: 0 0 16px color-mix(in srgb, var(--pod-color) 70%, transparent);
       text-align: center; line-height: 1.2; white-space: nowrap;
@@ -134,7 +134,7 @@
       display: grid; grid-template-columns: repeat(3, 1fr);
       flex: 1; min-width: 0;
     }
-    .pod-queues > .card { border-radius: 0; border-right: 1px solid rgba(255,255,255,0.05); }
+    .pod-queues > .card { border-radius: 0; border-right: 1px solid rgba(255,255,255,0.18); }
     .pod-queues > .card:last-child { border-right: none; }
 
     /* ── RIGHT VOICE PANELS ── */
@@ -153,8 +153,8 @@
       background: color-mix(in srgb, var(--panel-color) 8%, rgba(4,7,15,0.7));
     }
     .voice-panel-title {
-      font-family: var(--font-h); font-size: clamp(0.6rem,0.95vw,0.82rem); font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase; color: #fff; line-height: 1.2;
+      font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #fff; line-height: 1.2;
       text-shadow: 0 0 14px color-mix(in srgb, var(--panel-color) 60%, transparent), 0 0 32px color-mix(in srgb, var(--panel-color) 25%, transparent);
       text-align: center;
     }
@@ -267,8 +267,8 @@
       padding: 0.9rem 0.6rem; flex-shrink: 0; gap: 0.45rem;
     }
     .summary-label-title {
-      font-family: var(--font-h); font-size: clamp(0.75rem,1.2vw,1rem); font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase; color: #4da6ff;
+      font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #4da6ff;
       text-shadow: 0 0 16px rgba(77,166,255,0.55);
       text-align: center; line-height: 1.2;
     }
